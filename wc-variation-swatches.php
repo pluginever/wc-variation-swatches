@@ -171,6 +171,7 @@ final class WCVariationSwatches {
         define( 'WPWVS_FILE', __FILE__ );
         define( 'WPWVS_PATH', dirname( WPWVS_FILE ) );
         define( 'WPWVS_INCLUDES', WPWVS_PATH . '/includes' );
+        define( 'WPWVS_ADMIN', WPWVS_PATH . '/includes/admin' );
         define( 'WPWVS_URL', plugins_url( '', WPWVS_FILE ) );
         define( 'WPWVS_ASSETS_URL', WPWVS_URL . '/assets' );
         define( 'WPWVS_TEMPLATES_DIR', WPWVS_PATH . '/templates' );
@@ -205,7 +206,7 @@ final class WCVariationSwatches {
         //core includes
 		include_once WPWVS_INCLUDES . '/core-functions.php';
 		include_once WPWVS_INCLUDES . '/class-install.php';
-		include_once WPWVS_INCLUDES . '/class-post-types.php';
+		
 
 		//admin includes
 		if ( $this->is_request( 'admin' ) ) {
@@ -255,7 +256,7 @@ final class WCVariationSwatches {
     }
 
     public function plugin_init() {
-        new \Pluginever\WCVariationSwatches\PostTypes();
+       
     }
 
     /**
