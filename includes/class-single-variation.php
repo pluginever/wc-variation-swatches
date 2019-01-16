@@ -4,249 +4,181 @@ namespace Pluginever\WCVariationSwatches;
 
 class Single_Variation {
 
-    public function __construct() {
-        add_action('init', array($this, 'initialize_settings'), 10, 1);
-    }
+	public function __construct() {
+		add_action('init', array($this, 'initialize_settings'), 10, 1);
+	}
 
-    public function initialize_settings() {
-        $simple_settings = get_option('wc_variation_swatches_simple');
+	public function initialize_settings() {
 
-        if ($simple_settings == '') {
-            $simple_settings = array(
-                'enable_tooltip'    => 'on',
-                'enable_stylesheet' => 'on',
-                'shape_style'       => 'round'
-            );
-        }
+		$stylesheet = wc_variation_swatches_get_settings('enable_stylesheet', 'on', 'wc_variation_swatches_settings');
 
-        $stylesheet = esc_html($simple_settings['enable_stylesheet']);
+		if ($stylesheet === 'on') {
+			add_filter('woocommerce_dropdown_variation_attribute_options_html', array($this, 'render_variable_swatch_style'), 100, 2);
+			add_filter('wc_variation_swatch_attribute_html', array($this, 'wc_variation_swatch_attribute_html'), 5, 4);
+		}
+	}
 
-        if ($stylesheet === 'on') {
-            add_filter('woocommerce_dropdown_variation_attribute_options_html', array($this, 'render_variable_swatch_style'), 100, 2);
-            add_filter('variation_swatch_render_html', array($this, 'swatch_single_page_variation_html'), 5, 4);
-        }
-    }
-
-    public function render_variable_swatch_style($html, $args) {
-        $types = wc_variation_swatches_types();
-        $attr  = wc_variation_swatches_get_tax_attribute($args['attribute']);
-
-        if (empty($attr)) {
-            return $html;
-        }
-
-        $options   = $args['options'];
-        $product   = $args['product'];
-        $attribute = $args['attribute'];
-        $class     = "variation-selector variation-select-{$attr->attribute_type}";
-        $swatches  = '';
-
-        if (empty($options) && !empty($product) && !empty($attribute)) {
-            $attributes = $product->get_variation_attributes();
-            $options    = $attributes[$attribute];
-        }
-
-        if (array_key_exists($attr->attribute_type, $types)) {
-            if (!empty($options) && $product && taxonomy_exists($attribute)) {
-                $all_terms = wc_get_product_terms($product->get_id(), $attribute, array('fields' => 'all'));
-                foreach ($all_terms as $term) {
-                    if (in_array($term->slug, $options)) {
-                        $swatches .= apply_filters('variation_swatch_render_html', '', $term, $attr, $args);
-                    }
-                }
-            }
-        }
-
-        if (!empty($swatches)) {
-            $class    = "hidden";
-            $swatches = '<div class="wc-ever-swatches" data-attribute_name="attribute_' . esc_attr($attribute) . '">' . $swatches . '</div>';
-            $html     = '<div class="' . esc_attr($class) . '">' . $html . '</div>' . $swatches;
-        }
-        return $html;
-    }
-
-    public function swatch_single_page_variation_html($html, $term, $attr, $args) {
-
-        $selected         = sanitize_title($args['selected']) == $term->slug ? 'selected' : '';
-        $name             = esc_html($term->name);
-        $simple_settings  = get_option('wc_variation_swatches_simple');
-        $advance_settings = get_option('wc_variation_swatches_advance');
-
-        if ($simple_settings == '') {
-            $simple_settings = array(
-                'enable_tooltip'    => 'on',
-                'enable_stylesheet' => 'on',
-                'shape_style'       => 'round'
-            );
-        }
-
-        if ($advance_settings == '') {
-            $advance_settings = array(
-                'width'              => '30px',
-                'height'             => '30px',
-                'font_size'          => '15px',
-                'tooltip_bg_color'   => '#555',
-                'tooltip_text_color' => '#fff',
-                'border_style'       => 'enable'
-            );
-        }
+	/**
+	 * Chnage the default list of variation attributes html.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $html
+	 * @param $args
+	 *
+	 * @return string html
+	 */
 
 
-        if (array_key_exists('shape_style', $simple_settings)) {
-            $class_shapes = esc_html($simple_settings['shape_style']);
-        }
+	public function render_variable_swatch_style($html, $args) {
 
-        if (array_key_exists('enable_tooltip', $simple_settings)) {
-            $tooltips = esc_html($simple_settings['enable_tooltip']);
-        }
+		$types = wc_variation_swatches_types();
+		$attr  = wc_variation_swatches_get_tax_attribute($args['attribute']);
 
-        if (array_key_exists('width', $advance_settings)) {
-            $swatches_width = esc_html($advance_settings['width']);
-        }
+		if (empty($attr)) {
+			return $html;
+		}
 
-        if (array_key_exists('font_size', $advance_settings)) {
-            $tooltip_font_size = esc_html($advance_settings['font_size']);
-        }
+		$options   = $args['options'];
+		$product   = $args['product'];
+		$attribute = $args['attribute'];
+		$class     = "variation-selector variation-select-{$attr->attribute_type}";
+		$swatches  = '';
 
-        if (array_key_exists('height', $advance_settings)) {
-            $swatches_height = esc_html($advance_settings['height']);
-        }
+		if (empty($options) && !empty($product) && !empty($attribute)) {
 
-        if (array_key_exists('tooltip_bg_color', $advance_settings)) {
-            $tooltip_bg_color = esc_html($advance_settings['tooltip_bg_color']);
-        }
+			$attributes = $product->get_variation_attributes();
+			$options    = $attributes[$attribute];
 
-        if (array_key_exists('tooltip_text_color', $advance_settings)) {
-            $tooltip_text_color = esc_html($advance_settings['tooltip_text_color']);
-        }
+		}
 
-        if (array_key_exists('border_style', $advance_settings)) {
-            $border_styles = esc_html($advance_settings['border_style']);
-        }
+		if (array_key_exists($attr->attribute_type, $types)) {
 
-        if (!empty($class_shapes)) {
-            if ($class_shapes === 'round') {
-                $class_shape       = 'round-box';
-                $class_shape_image = 'round-box-image';
-            } else {
-                $class_shape       = 'square-box ';
-                $class_shape_image = 'square-box-image';
-            }
-        } else {
-            $class_shape       = '';
-            $class_shape_image = '';
-        }
+			if (!empty($options) && $product && taxonomy_exists($attribute)) {
 
-        if (!empty($tooltips)) {
-            if ($tooltips === 'on') {
-                $tooltip_class = 'wcvs-color-tooltip';
-            } else {
-                $tooltip_class = 'hidden';
-            }
-        } else {
-            $tooltip_class = 'wcvs-color-tooltip';
-        }
+				$all_terms = wc_get_product_terms($product->get_id(), $attribute, array('fields' => 'all'));
 
-        if (!empty($tooltip_font_size)) {
-            $font_size = $tooltip_font_size;
-        } else {
-            $font_size = '15px';
-        }
+				foreach ($all_terms as $term) {
 
-        if (!empty($swatches_width)) {
-            $swatches_width = $swatches_width;
-        } else {
-            $swatches_width = '30px';
-        }
+					if (in_array($term->slug, $options)) {
+						$swatches .= apply_filters('wc_variation_swatch_attribute_html', '', $term, $attr, $args);
+					}
 
-        if (!empty($swatches_height)) {
-            $swatches_height = $swatches_height;
-        } else {
-            $swatches_height = '30px';
-        }
+				}
 
-        if (!empty($border_styles)) {
-            if ($border_styles === 'enable') {
-                $border_style = 'wcvs-border-style';
-            } else {
-                $border_style = 'wcvs-border-style-none';
-            }
-        } else {
-            $border_style = 'wcvs-border-style';
-        }
+			}
+		}
 
-        switch ($attr->attribute_type) {
-            case 'color':
-                $color = get_term_meta($term->term_id, 'color', true);
-                list($r, $g, $b) = sscanf($color, "#%02x%02x%02x");
-                $html = sprintf(
-                    '<div class="swatch %s %s wcvs-attr-enable wcvs-attr-behaviour wcvs-swatch-color swatch-%s %s" style="background-color:%s;color:%s; width:%s; height:%s;" title="%s" data-value="%s"><span class="%s" style="background-color:%s; color:%s; font-size:%s;">%s</span></div>',
-                    $class_shape,
-                    $border_style,
-                    esc_attr($term->slug),
-                    $selected,
-                    esc_attr($color),
-                    "rgba($r,$g,$b,0.5)",
-                    esc_attr($swatches_width),
-                    esc_attr($swatches_height),
-                    esc_attr($name),
-                    esc_attr($term->slug),
-                    $tooltip_class,
-                    $tooltip_bg_color,
-                    $tooltip_text_color,
-                    $font_size,
-                    esc_attr($name)
-                );
-                break;
+		if (!empty($swatches)) {
+			$class    = "hidden";
+			$swatches = '<div class="wc-ever-swatches" data-attribute_name="attribute_' . esc_attr($attribute) . '">' . $swatches . '</div>';
+			$html     = '<div class="' . esc_attr($class) . '">' . $html . '</div>' . $swatches;
+		}
 
-            case 'image':
-                $image = get_term_meta($term->term_id, 'image', true);
-                $image = $image ? wp_get_attachment_image_src($image) : '';
-                $image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
+		return $html;
+	}
 
-                $html = sprintf(
-                    '<div style="width:%s; height:%s;" class="swatch %s %s wcvs-swatch-image swatch-%s %s" title="%s" data-value="%s"><img src="%s" alt="%s"><span class="%s" style="background-color:%s; color:%s; font-size:%s;">%s</span></div>',
+	/**
+	 * @param $html
+	 * @param $term
+	 * @param $attr
+	 * @param $args
+	 * @return string html
+	 */
 
-                    esc_attr($swatches_width),
-                    esc_attr($swatches_height),
-                    $class_shape_image,
-                    $border_style,
-                    esc_attr($term->slug),
-                    $selected,
-                    esc_attr($name),
-                    esc_attr($term->slug),
-                    esc_url($image),
-                    esc_attr($name),
-                    $tooltip_class,
-                    $tooltip_bg_color,
-                    $tooltip_text_color,
-                    $font_size,
-                    esc_attr($name)
-                );
-                break;
+	function wc_variation_swatch_attribute_html($html, $term, $attr, $args) {
 
-            case 'label':
-                $label = get_term_meta($term->term_id, 'label', true);
-                $label = $label ? $label : $name;
-                $html  = sprintf(
-                    '<div style="width:%s; height: %s;" class="swatch %s wcvs-swatch-label %s swatch-%s %s" title="%s" data-value="%s">%s<span class="%s" style="background-color:%s; color:%s; font-size:%s;">%s</span></div>',
-                    esc_attr($swatches_width),
-                    esc_attr($swatches_height),
-                    $border_style,
-                    $class_shape,
-                    esc_attr($term->slug),
-                    $selected,
-                    esc_attr($name),
-                    esc_attr($term->slug),
-                    esc_html($label),
-                    $tooltip_class,
-                    $tooltip_bg_color,
-                    $tooltip_text_color,
-                    $font_size,
-                    esc_attr($name)
-                );
-                break;
-        }
-        return $html;
-    }
+		$selected = sanitize_title($args['selected']) == $term->slug ? 'selected' : '';
+		$name     = esc_html($term->name);
+
+		$shape_style         = wc_variation_swatches_get_settings('shape_style', 'round', 'wc_variation_swatches_settings');
+		$enable_tooltip      = wc_variation_swatches_get_settings('enable_tooltip', 'on', 'wc_variation_swatches_settings');
+		$border              = wc_variation_swatches_get_settings('border', 'enable', 'wc_variation_swatches_settings');
+		$shape_width         = wc_variation_swatches_get_settings('width', '15px', 'wc_variation_swatches_settings');
+		$shape_height        = wc_variation_swatches_get_settings('height', '15px', 'wc_variation_swatches_settings');
+		$tooltip_bg_color    = wc_variation_swatches_get_settings('tooltip_bg_color', '', 'wc_variation_swatches_settings');
+		$font_size           = wc_variation_swatches_get_settings('font_size', '15px', 'wc_variation_swatches_settings');
+		$tooltip_text_color  = wc_variation_swatches_get_settings('tooltip_text_color', '', 'wc_variation_swatches_settings');
+		$border_color        = wc_variation_swatches_get_settings('border_color', '', 'wc_variation_swatches_settings');
+		$border_active_color = wc_variation_swatches_get_settings('border_active_color', '', 'wc_variation_swatches_settings');
+
+
+		$border_style = ($border == 'enable') ? 'wcvs-border-style' : 'wcvs-border-style-none';
+
+		$tooltip_class = ($enable_tooltip == 'off') ? 'hidden' : 'wcvs-color-tooltip';
+		$tooltip_html  = '<span class="' . $tooltip_class . '">' . $name . '</span>';
+
+		$class_shape       = $shape_style . '-box';
+		$class_shape_image = $shape_style . '-box-image';
+		$class = join(' ', ['swatch', $class_shape, $border_style, 'swatch-' . $term->slug, $selected]);
+
+		$color = get_term_meta($term->term_id, 'color', true);
+
+		switch ($attr->attribute_type) {
+			case 'color':
+				$html = sprintf('<div class="wcvs-swatch-color %s" title="%s" data-value="%s">'.$tooltip_html.'</div>', $class, $name, $term->slug);
+				break;
+
+			case 'image':
+				$image = get_term_meta($term->term_id, 'image', true);
+				$image = $image ? wp_get_attachment_image_src($image) : '';
+				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
+
+				$html = sprintf('<div class="wcvs-swatch-image %s %s" title="%s" data-value="%s"><img src="%s" alt="%2$s">'.$tooltip_html.'</div>', $class, $class_shape_image, $name, $term->slug, $image);
+				break;
+
+			case 'label':
+				$label = get_term_meta($term->term_id, 'label', true);
+				$label = $label ? $label : $name;
+				$html  = sprintf('<div class="wcvs-swatch-label %s" title="%s" data-value="%s">%s'.$tooltip_html.'</div>', $class, $name, $term->slug);
+				break;
+		}
+
+		echo $this->style($color, $shape_width, $shape_height, $tooltip_bg_color, $font_size, $tooltip_text_color);
+
+		return $html;
+
+	}
+
+	/**
+	 * Styles for frontend
+	 *
+	 * @param $term
+	 *
+	 * @return string style
+	 */
+
+	function style($color, $shape_width, $shape_height, $tooltip_bg_color, $font_size, $tooltip_text_color) {
+
+		list($r, $g, $b) = sscanf($color, "#%02x%02x%02x");
+		$rgb = join(', ', [$r, $g, $b]);
+
+		?>
+
+		<style type="text/css">
+
+			.wcvs-color-tooltip {
+				background-color: <?php echo $tooltip_bg_color ?>;
+				color: <?php echo $tooltip_text_color ?>;
+				font-size: <?php echo $font_size ?>;
+			}
+
+			.wcvs-swatch-image, .wcvs-swatch-label, .wcvs-swatch-color{
+				width: <?php echo $shape_width ?>;
+				height: <?php echo $shape_height ?>;
+			}
+
+			.wcvs-swatch-color {
+				background-color: <?php echo $color ?>;
+				color: rgba(<?php echo $rgb ?>, 0.5);
+			}
+
+		</style>
+
+		<?php
+
+		return;
+
+	}
+
 }

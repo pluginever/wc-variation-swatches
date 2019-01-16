@@ -477,7 +477,9 @@ namespace Pluginever\WCVariationSwatches\Admin;
          * @return string
          */
         function get_option( $option, $section, $default = '' ) {
+
             $options = get_option( $section );
+
             if ( isset( $options[ $option ] ) ) {
                 return $options[ $option ];
             }

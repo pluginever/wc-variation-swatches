@@ -46,6 +46,7 @@ function wc_variation_swatches_get_tax_attribute( $taxonomy ) {
  *
  * @return object attribute_taxonomy
  */
+
 function wc_variation_swatches_get_attr_tax_by_name( $taxonomy_name ) {
 
 	global $wpdb;
@@ -121,5 +122,23 @@ function wc_variation_swatches_field_label( $type ) {
 			_e('Term', 'wc-variation-swatches');
 	}
 }
+
+/**
+ * Return saved setting options
+ *
+ * @param $key
+ * @param string $default
+ * @param string $section
+ *
+ * @return string
+ */
+
+function wc_variation_swatches_get_settings($key, $default = '', $section = '') {
+
+	$option = get_option($section, []);
+
+	return !empty($option[$key]) ? $option[$key] : $default;
+}
+
 
 
