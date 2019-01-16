@@ -4,222 +4,247 @@ namespace Pluginever\WCVariationSwatches\Admin;
 
 class Attribute_Handler {
 
-    /**
-     * Terms_Handler constructor.
-     */
-    public function __construct() {
-        add_action('admin_init', [$this, 'setup_attribute_hooks']);
-        add_action('woocommerce_product_option_terms', [$this, 'setup_attribute_term_in_product'], 10, 2);
-    }
+	function __construct() {
+		add_action('admin_init', array($this, 'setup_attribute_hooks'));
+		add_action('woocommerce_product_option_terms', array($this, 'product_option_terms'), 10, 2);
 
-    /**
-     * Set all the hooks to hook wc terms
-     *
-     * @since 1.0.0
-     */
-    public function setup_attribute_hooks() {
+	}
 
-        return;
+	/**
+	 * Set all the hooks for adding fields to attribute screen
+	 * Save new term meta
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function setup_attribute_hooks() {
 
-        //trace($_REQUEST);
+		$attribute_taxonomies = wc_get_attribute_taxonomies();
 
-        //die();
+		if (empty($attribute_taxonomies)) {
+			return;
+		}
 
-        if (!function_exists('wc_get_attribute_taxonomies') || !function_exists('wc_attribute_taxonomy_name')) {
-            return;
-        }
+		foreach ($attribute_taxonomies as $attribute_taxonomy) {
 
-        $attribute_taxonomies = wc_get_attribute_taxonomies();
+			$attribute_taxonomy_name = wc_attribute_taxonomy_name($attribute_taxonomy->attribute_name);
 
-        if (empty($attribute_taxonomies)) {
-            return;
-        }
+			add_action($attribute_taxonomy_name . '_add_form_fields', array($this, 'add_attribute_fields'));
+			add_action($attribute_taxonomy_name . '_edit_form_fields', array($this, 'edit_attribute_fields'), 10, 2);
 
+			add_filter('manage_edit-' . $attribute_taxonomy_name . '_columns', array($this, 'add_attribute_columns'));
+			add_filter('manage_' . $attribute_taxonomy_name . '_custom_column', array($this, 'add_attribute_column_content'), 10, 3);
 
-        foreach ($attribute_taxonomies as $attribute_taxonomy) {
+		}
 
-            $attribute_taxonomy_name = wc_attribute_taxonomy_name($attribute_taxonomy->attribute_name);
-            add_action($attribute_taxonomy_name . '_add_form_fields', array($this, 'add_attribute_fields'));
-            add_action($attribute_taxonomy_name . '_edit_form_fields', array($this, 'edit_attribute_fields'), 10, 2);
+		add_action('created_term', array($this, 'save_term_meta'), 10, 2);
+		add_action('edit_term', array($this, 'save_term_meta'), 10, 2);
 
-            add_filter('manage_edit-' . $attribute_taxonomy_name . '_columns', array($this, 'add_attribute_columns'));
-            add_filter('manage_' . $attribute_taxonomy_name . '_custom_column', array($this, 'add_attribute_column_content'), 10, 3);
+	}
 
-        }
+	/**
+	 * add attribute fields to attribute term screen
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $taxonomy
+	 */
 
-        add_action('created_term', array($this, 'save_term_meta'), 10, 2);
-        add_action('edit_term', array($this, 'save_term_meta'), 10, 2);
+	public function add_attribute_fields($taxonomy) {
 
-    }
+		$attribute_tax  = wc_variation_swatches_get_attr_tax_by_name($taxonomy);
+		$swatches_types = wc_variation_swatches_types();
 
-    public function add_attribute_fields($taxonomy) {
+		?>
 
-        $attribute_tax  = wc_variation_swatches_get_attr_tax_by_name($taxonomy);
-        $swatches_types = wc_variation_swatches_types();
+		<div class="form-field term-slug-wrap">
 
-        ?>
+			<label for="tag-slug">Term</label>
 
-        <div class="form-field term-slug-wrap">
-            <label for="tag-slug">Term</label>
+			<?php echo wc_variation_swatches_get_field($attribute_tax->attribute_type, null); ?>
 
-            <?php echo wc_variation_swatches_get_field($attribute_tax->attribute_type, null); ?>
+		</div>
 
-        </div>
+		<script>
 
-        <script>
+			jQuery(document).ajaxComplete(function (event, request, options) {
 
-            jQuery(document).ajaxComplete(function (event, request, options) {
-                if (request && 4 === request.readyState && 200 === request.status
-                    && options.data && 0 <= options.data.indexOf('action=add-tag')) {
+				if (request && 4 === request.readyState && 200 === request.status
+					&& options.data && 0 <= options.data.indexOf('action=add-tag')) {
 
-                    var res = wpAjax.parseAjaxResponse(request.responseXML, 'ajax-response');
-                    if (!res || res.errors) {
-                        return;
-                    }
-                    // Clear Thumbnail fields on submit
-                    jQuery('.wc-variation-swatches-preview').find('img').attr('src', '<?php echo esc_js(wc_placeholder_img_src()); ?>');
-                    jQuery('.wc-variation-swatches-term-image').val('');
-                    jQuery('.wc-variation-swatches-remove-image').hide();
-                    return;
-                }
-            });
-        </script>
-        <?php
-    }
+					var res = wpAjax.parseAjaxResponse(request.responseXML, 'ajax-response');
+					if (!res || res.errors) {
+						return;
+					}
 
-    public function edit_attribute_fields($term, $taxonomy) {
-        var_dump($term);
-        var_dump($taxonomy);
+					// Clear Thumbnail fields on submit
+					jQuery('.wc-variation-swatches-preview').find('img').attr('src', '<?php echo esc_js(wc_placeholder_img_src()); ?>');
+					jQuery('.wc-variation-swatches-term-image').val('');
+					jQuery('.wc-variation-swatches-remove-image').hide();
+				}
 
-    }
+			});
 
-    public function save_term_meta($term_id, $term_taxonomy_id) {
+		</script>
 
-        $swatches_types = wc_variation_swatches_types();
+		<?php
+	}
 
-        foreach ($swatches_types as $swatches_type => $label) {
+	/**
+	 * Create hook to fields to edit attribute term screen
+	 *
+	 * @param object $term
+	 * @param string $taxonomy
+	 */
 
-            if (!empty($_REQUEST[$swatches_type])) {
-                update_term_meta($term_id, $swatches_type, $_REQUEST[$swatches_type]);
-            }
+	function edit_attribute_term_screen($term, $taxonomy) {
 
-        }
+	}
 
-        if (!empty($_REQUEST['wcvs-image'])) {
-            update_term_meta($term_id, 'wcvs-image', esc_attr($_REQUEST['wcvs-image']));
-        }
+	/**
+	 * Save attribute term meta
+	 *
+	 * @param integer $term_id
+	 * @param integer $term_taxonomy_id
+	 */
 
-    }
+	 function save_term_meta($term_id, $term_taxonomy_id) {
 
-    public function get_attribute_fields($taxonomy, $term) {
+		$swatches_types = wc_variation_swatches_types();
 
-    }
+		foreach ($swatches_types as $swatches_type => $label) {
 
-    public function add_attribute_columns($columns) {
-        //		unset($columns['cb']);
-        //		array_unshift($columns, 'thumb');
-        //		array_unshift($columns, 'cb');
-        $new_columns          = array();
-        $new_columns['cb']    = $columns['cb'];
-        $new_columns['thumb'] = '';
-        unset($columns['cb']);
+			if (!empty($_REQUEST[$swatches_type])) {
+				update_term_meta($term_id, $swatches_type, esc_attr($_REQUEST[$swatches_type]));
+			}
 
-        return array_merge($new_columns, $columns);
-    }
+		}
 
-    /**
-     * Add custom column content for attributes table
-     *
-     * @param $columns
-     * @param $column
-     * @param $term_id
-     */
+		//save image type attribute terms images
+		if (!empty($_REQUEST['wcvs-image'])) {
+			update_term_meta($term_id, 'wcvs-image', esc_attr($_REQUEST['wcvs-image']));
+		}
 
-    public function add_attribute_column_content($columns, $column, $term_id) {
+	}
 
-        $taxonomy = '';
+	/**
+	 * Add extra custom column on attribute term screen list
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $columns
+	 *
+	 * @return array columns
+	 */
 
-        if (!empty($_POST['taxonomy'])) {
-            $taxonomy = esc_attr($_POST['taxonomy']);
-        }
+	 function add_attribute_columns($columns) {
 
-        if (!empty($_GET['taxonomy'])) {
-            $taxonomy = esc_attr($_GET['taxonomy']);
-        }
+		$new_columns          = array();
+		$new_columns['cb']    = $columns['cb'];
+		$new_columns['thumb'] = '';
 
-        if (empty($taxonomy)) {
-            return;
-        }
+		unset($columns['cb']);
 
-        $attribute_tax = wc_variation_swatches_get_attr_tax_by_name($taxonomy);
+		return array_merge($new_columns, $columns);
+	}
 
-        switch ($attribute_tax->attribute_type) {
+	/**
+	 * Render thumbnail HTML for attributes terms depend on attribute type
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param $columns
+	 * @param $column
+	 * @param $term_id
+	 */
 
-            case 'wcvs-color':
-                $value = get_term_meta($term_id, 'wcvs-color', true);
+	function add_attribute_column_content($columns, $column, $term_id){
 
-                printf('<div class="wc-variation-swatches-preview swatches-type-color" style="background-color:%s;"></div>', esc_attr($value));
-                break;
+		$taxonomy = '';
 
-            case 'wcvs-image':
-                $value = get_term_meta($term_id, 'wcvs-image', true);
+		if (!empty($_POST['taxonomy'])) {
+			$taxonomy = esc_attr($_POST['taxonomy']);
+		}
 
-                $image = !empty($value) ? wp_get_attachment_image_src($value) : '';
-                $image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
+		if (!empty($_GET['taxonomy'])) {
+			$taxonomy = esc_attr($_GET['taxonomy']);
+		}
 
-                printf('<img class="wc-variation-swatches-preview swatches-type-image" src="%s" width="44px" height="44px">', esc_url($image));
-                break;
+		if (empty($taxonomy)) {
+			return;
+		}
 
-            case 'wcvs-label':
-                $value = get_term_meta($term_id, 'wcvs-label', true);
+		$attribute_tax = wc_variation_swatches_get_attr_tax_by_name($taxonomy);
 
-                printf('<div class="wc-variation-swatches-preview swatches-type-label">%s</div>', esc_html($value));
-                break;
-        }
+		switch ($attribute_tax->attribute_type) {
 
-    }
+			case 'wcvs-color':
+				$value = get_term_meta($term_id, 'wcvs-color', true);
 
-    public function setup_attribute_term_in_product($taxonomy, $index) {
+				printf('<div class="wc-variation-swatches-preview swatches-type-color" style="background-color:%s;"></div>', esc_attr($value));
+				break;
 
-        $taxonomy_name = wc_attribute_taxonomy_name($taxonomy->attribute_name);
+			case 'wcvs-image':
+				$value = get_term_meta($term_id, 'wcvs-image', true);
 
-        global $id;
+				$image = !empty($value) ? wp_get_attachment_image_src($value) : '';
+				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
-        ?>
+				printf('<img class="wc-variation-swatches-preview swatches-type-image" src="%s" width="44px" height="44px">', esc_url($image));
+				break;
 
-        <select multiple="multiple" data-placeholder="<?php esc_attr_e('Select terms', 'wc-variation-swatches'); ?>" class="multiselect attribute_values wc-enhanced-select" name="attribute_values[<?php echo esc_attr($index); ?>][]">
+			case 'wcvs-label':
+				$value = get_term_meta($term_id, 'wcvs-label', true);
 
-            <?php
+				printf('<div class="wc-variation-swatches-preview swatches-type-label">%s</div>', esc_html($value));
+				break;
+		}
 
-            $args = array(
-                'orderby'    => 'name',
-                'hide_empty' => 0,
-            );
+	}
 
-            $all_terms = get_terms($taxonomy_name, apply_filters('woocommerce_product_attribute_terms', $args));
 
-            if ($all_terms) {
+	/**
+	 * Add selector for extra attribute types
+	 *
+	 * @param $taxonomy
+	 * @param $index
+	 */
+	 function product_option_terms($taxonomy, $index) {
 
-                foreach ($all_terms as $term) {
+		if (!array_key_exists($taxonomy->attribute_type, wc_variation_swatches_types())) {
+			return;
+		}
 
-                    $options = $taxonomy->attribute_type;
-                    $options = !empty($options) ? $options : [];
+		$taxonomy_name = wc_attribute_taxonomy_name($taxonomy->attribute_name);
 
-                    echo '<option class="button" value="' . esc_attr($term->term_id) . '" ' .
-                        wc_selected(has_term(absint($term->term_id), $taxonomy_name, $id), true, false) . '>' .
-                        esc_attr(apply_filters('woocommerce_product_attribute_term_name', $term->name, $term)) . '</option>';
-                }
-            }
+		global $id;
 
-            ?>
-        </select>
+		$id = isset($_POST['post_id']) ? absint($_POST['post_id']) : $id;
 
-        <button class="button plus select_all_attributes"><?php esc_html_e('Select all', 'wc-variation-swatches'); ?></button>
-        <button class="button minus select_no_attributes"><?php esc_html_e('Select none', 'wc-variation-swatches'); ?></button>
-        <button class="button fr plus add_new_attribute"><?php esc_html_e('Add new', 'wc-variation-swatches'); ?></button>
+		?>
 
-        <?php
+		<select multiple="multiple" data-placeholder="<?php esc_attr_e('Select terms', 'wcvs'); ?>" class="multiselect attribute_values wc-enhanced-select" name="attribute_values[<?php echo $index; ?>][]">
 
-    }
+			<?php
+
+			$all_terms = get_terms($taxonomy_name, apply_filters('woocommerce_product_attribute_terms', array('orderby' => 'name', 'hide_empty' => false)));
+
+			if ($all_terms) {
+				foreach ($all_terms as $term) {
+					echo '<option value="' . esc_attr($term->term_id) . '" ' . selected(has_term(absint($term->term_id), $taxonomy_name, $id), true, false) . '>' . esc_attr(apply_filters('woocommerce_product_attribute_term_name', $term->name, $term)) . '</option>';
+				}
+			}
+
+			?>
+
+		</select>
+		<button class="button plus select_all_attributes"><?php esc_html_e('Select all', 'wcvs'); ?></button>
+		<button class="button minus select_no_attributes"><?php esc_html_e('Select none', 'wcvs'); ?></button>
+		<button class="button fr plus tawcvs_add_new_attribute" data-type="<?php echo $taxonomy->attribute_type ?>"><?php esc_html_e('Add new', 'wcvs'); ?></button>
+
+		<?php
+	}
+
 
 }
