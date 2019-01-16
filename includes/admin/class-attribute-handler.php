@@ -98,9 +98,29 @@ class Attribute_Handler {
 	 * @param string $taxonomy
 	 */
 
-	function edit_attribute_term_screen($term, $taxonomy) {
+	function edit_attribute_fields($term, $taxonomy) {
 
-	}
+		$attribute_tax = wc_variation_swatches_get_attr_tax_by_name($taxonomy);
+
+		// Return if this is a default attribute type
+		if ( in_array( $attribute_tax->attribute_type, array( 'select', 'text' ) ) ) {
+			return;
+		}
+
+		$value = get_term_meta($term->term_id, $attribute_tax->attribute_type, true);
+
+		?>
+
+		<tr class="form-field term-slug-wrap">
+			<th scope="row"><label for="term-slug">Term</label></th>
+			<td>
+
+				<?php echo wc_variation_swatches_get_field($attribute_tax->attribute_type, $value); ?>
+
+			</td>
+		</tr>
+
+	<?php }
 
 	/**
 	 * Save attribute term meta
@@ -177,17 +197,15 @@ class Attribute_Handler {
 
 		$attribute_tax = wc_variation_swatches_get_attr_tax_by_name($taxonomy);
 
+		$value = get_term_meta($term_id, $attribute_tax->attribute_type, true);
+
 		switch ($attribute_tax->attribute_type) {
 
 			case 'wcvs-color':
-				$value = get_term_meta($term_id, 'wcvs-color', true);
-
 				printf('<div class="wc-variation-swatches-preview swatches-type-color" style="background-color:%s;"></div>', esc_attr($value));
 				break;
 
 			case 'wcvs-image':
-				$value = get_term_meta($term_id, 'wcvs-image', true);
-
 				$image = !empty($value) ? wp_get_attachment_image_src($value) : '';
 				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
@@ -195,8 +213,6 @@ class Attribute_Handler {
 				break;
 
 			case 'wcvs-label':
-				$value = get_term_meta($term_id, 'wcvs-label', true);
-
 				printf('<div class="wc-variation-swatches-preview swatches-type-label">%s</div>', esc_html($value));
 				break;
 		}
