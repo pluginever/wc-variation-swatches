@@ -57,10 +57,10 @@ function wc_variation_swatches_field( $type, $value = null ) {
 				<img src="<?php echo esc_url( $image ) ?>" width="60px" height="60px"/>
 			</div>
 
-			<div style="line-height:60px;">
+			<div class="wc-variation-swatches-button-container">
 				<input type="hidden" class="wc-variation-swatches-term-image" name="image" value="<?php echo esc_attr( $value ) ?>"/>
-				<button type="button" class="wc-variation-swatches-upload-image button"><?php esc_html_e( 'Select image', 'wc-variation-swatches' ); ?></button>
-				<button type="button" class="wc-variation-swatches-remove-image button <?php echo $value ? '' : 'hidden' ?>"><?php esc_html_e( 'Remove image', 'wc-variation-swatches' ); ?></button>
+				<button type="button" class="wc-variation-swatches-upload-image button" style="margin-right: 10px;"><?php esc_html_e( 'Select image', 'wc-variation-swatches' ); ?></button>
+				<button type="button" class="wc-variation-swatches-remove-image button button-link-delete <?php echo $value ? '' : 'hidden' ?>"><?php esc_html_e( 'Remove image', 'wc-variation-swatches' ); ?></button>
 			</div>
 
 			<?php

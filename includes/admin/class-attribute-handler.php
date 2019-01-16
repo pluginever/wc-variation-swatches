@@ -60,7 +60,9 @@ class Attribute_Handler {
 
 		<div class="form-field term-slug-wrap">
 
-			<label for="tag-slug"><?php wc_variation_swatches_field_label($attribute_tax->attribute_type) ?></label>
+			<label for="tag-slug" style="margin: 10px 0;">
+				<?php wc_variation_swatches_field_label($attribute_tax->attribute_type) ?>
+			</label>
 
 			<?php wc_variation_swatches_field($attribute_tax->attribute_type, null); ?>
 

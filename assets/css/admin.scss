@@ -1,8 +1,12 @@
 .wc-variation-swatches-preview  {
-	width: 44px;
-	height: 44px;
-	line-height: 44px;
+	width: 60px;
+	height: 60px;
 	text-align: center;
 	font-weight: 700;
 	border: 1px solid #ccc;
+}
+.wc-variation-swatches-button-container{
+	display: flex;
+	align-items: center;
+	height: 60px;
 }
