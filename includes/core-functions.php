@@ -1,7 +1,16 @@
 <?php
 //function prefix wc_variation_swatches
 
+/**
+ * Add extra attributes types
+ *
+ * @since 1.0.0
+ *
+ * @return array attribute_types
+ */
+
 function wc_variation_swatches_types() {
+
 	$types = array(
 		'color' => esc_html__( 'Color', 'wc-variation-swatches' ),
 		'image' => esc_html__( 'Image', 'wc-variation-swatches' ),
@@ -11,7 +20,15 @@ function wc_variation_swatches_types() {
 	return apply_filters( 'wc_variation_swatches_types', $types );
 }
 
+/**
+ * Get attribute name
+ *
+ * @param $taxonomy
+ * @return array|null|object|string|string[]|void
+ */
+
 function wc_variation_swatches_get_tax_attribute( $taxonomy ) {
+
 	global $wpdb;
 
 	$attribute_name = preg_replace( '/^pa_/i', '', $taxonomy );
@@ -21,15 +38,18 @@ function wc_variation_swatches_get_tax_attribute( $taxonomy ) {
 }
 
 /**
- * Get WC attribute taxonomy using name
+ * Get WC attribute taxonomy by taxonomy name
  *
  * @param $taxonomy_name
- *  * @since 1.0.0
  *
- * @return null|object
+ * @since 1.0.0
+ *
+ * @return object attribute_taxonomy
  */
 function wc_variation_swatches_get_attr_tax_by_name( $taxonomy_name ) {
+
 	global $wpdb;
+
 	$taxonomy_name      = preg_replace( '/^pa_/i', '', $taxonomy_name );
 	$attribute_taxonomy = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = '$taxonomy_name'" );
 
@@ -38,6 +58,8 @@ function wc_variation_swatches_get_attr_tax_by_name( $taxonomy_name ) {
 
 /**
  * Get attribute field depending on attribute type
+ *
+ * @since 1.0.0
  *
  * @param $type
  * @param null $value
