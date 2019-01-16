@@ -50,17 +50,18 @@ class Settings {
 				array(
 					'name'    => 'enable_stylesheet',
 					'label'   => __('Enable Stylesheet', 'wc-variation-swatches'),
-					'desc'    => sprintf('<span class="howto">%s</span>', __('Enable / Disable plugin default stylesheet.', 'wc-variation-swatches') ),
+					'desc'    => sprintf('<span class="howto">%s</span>', __('Enable / Disable plugin default stylesheet.', 'wc-variation-swatches')),
 					'type'    => 'checkbox',
 					'default' => 'checked',
+					'class'   => 'enable_stylesheet_check',
 				),
 
 				//Shape
 
 				array(
-					'name'    => 'shape_style_heading',
-					'label'   => __('Shape Style', 'wc-variation-swatches'),
-					'type'   => 'heading',
+					'name'  => 'shape_style_heading',
+					'label' => __('Shape Style', 'wc-variation-swatches'),
+					'type'  => 'heading',
 				),
 
 				array(
@@ -107,15 +108,15 @@ class Settings {
 				//Tooltip
 
 				array(
-					'name'    => 'tooltip_heading',
-					'label'   => __('Tooltip', 'wc-variation-swatches'),
-					'type'   => 'heading',
+					'name'  => 'tooltip_heading',
+					'label' => __('Tooltip', 'wc-variation-swatches'),
+					'type'  => 'heading',
 				),
 
 				array(
 					'name'    => 'enable_tooltip',
 					'label'   => __('Enable Tooltip', 'wc-variation-swatches'),
-					'desc'    => sprintf('<span class="howto">%s</span>', __('Enable / Disable plugin default tooltip on each product attribute.', 'wc-variation-swatches') ),
+					'desc'    => sprintf('<span class="howto">%s</span>', __('Enable / Disable plugin default tooltip on each product attribute.', 'wc-variation-swatches')),
 					'type'    => 'checkbox',
 					'default' => 'checked',
 				),
@@ -145,9 +146,9 @@ class Settings {
 				//Border
 
 				array(
-					'name'    => 'border_heading',
-					'label'   => __('Border', 'wc-variation-swatches'),
-					'type'   => 'heading',
+					'name'  => 'border_heading',
+					'label' => __('Border', 'wc-variation-swatches'),
+					'type'  => 'heading',
 				),
 
 				array(

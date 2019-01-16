@@ -247,6 +247,9 @@ namespace Pluginever\WCVariationSwatches\Admin;
          */
         function callback_checkbox( $args ) {
             $value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+
+			$class        = isset( $args['class'] ) ? $args['class'] : '';
+
             $html  = '<fieldset>';
             $html  .= sprintf( '<label for="wpuf-%1$s[%2$s]">', $args['section'], $args['id'] );
             $html  .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', $args['section'], $args['id'] );

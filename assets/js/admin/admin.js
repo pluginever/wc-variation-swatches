@@ -20,8 +20,25 @@
 			$(document).on('click', '.wc-variation-swatches-upload-image', app.handle_term_image_upload);
 			$(document).on('click', '.wc-variation-swatches-remove-image', app.remove_term_image);
 			$(document).on('submit', '#addtag', app.clear_term_add_form);
-			
+
+			app.settings_display();
+			$(document).on('click', '.enable_stylesheet_check input[type=checkbox]', app.settings_display);
+
 		},
+
+		settings_display: function(){
+
+			var $enable_stylesheet_check = $('.enable_stylesheet_check');
+			var $checkbox = $('.enable_stylesheet_check input[type=checkbox]');
+
+			if ($checkbox.is(':checked')) {
+				$enable_stylesheet_check.nextAll().show(300);
+			}else{
+				$enable_stylesheet_check.nextAll().hide(300);
+			}
+
+		},
+
 
 		handle_term_image_upload: function (e) {
 
