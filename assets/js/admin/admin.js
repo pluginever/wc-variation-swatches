@@ -9,20 +9,24 @@
 /*jslint browser: true */
 /*global jQuery:false */
 
-window.wc_variation_swatches = (function (window, document, $, undefined) {
+(function (window, document, $, undefined) {
 	'use strict';
 
 	var app = {
 
 		initialize: function () {
+
 			$('#term-color').wpColorPicker();
-			$(document).on('click', '.wc-variation-swatches-upload-image', wc_variation_swatches.handle_term_image_upload);
-			$(document).on('click', '.wc-variation-swatches-remove-image', wc_variation_swatches.remove_term_image);
-			$(document).on('submit', '#addtag', wc_variation_swatches.clear_term_add_form);
+			$(document).on('click', '.wc-variation-swatches-upload-image', app.handle_term_image_upload);
+			$(document).on('click', '.wc-variation-swatches-remove-image', app.remove_term_image);
+			$(document).on('submit', '#addtag', app.clear_term_add_form);
+			
 		},
 
 		handle_term_image_upload: function (e) {
+
 			e.preventDefault();
+
 			var $button = $(this), frame;
 
 			// If the media frame already exists, reopen it.
@@ -54,13 +58,19 @@ window.wc_variation_swatches = (function (window, document, $, undefined) {
 		},
 
 		remove_term_image: function (e) {
+
 			e.preventDefault();
+
 			var $button = $(this);
+
+			$button.siblings('.wc-variation-swatches-term-image').attr('value', '');
+			$button.parent().prev('.wc-variation-swatches-preview').find('img').attr('src', wpwvs.placeholder_img);
+			$button.hide();
+
 		},
 
-		clear_term_add_form:function (e) {
-			console.log(e);
-			console.log(this);
+		clear_term_add_form:function () {
+
 		}
 	};
 

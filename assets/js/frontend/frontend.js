@@ -15,12 +15,12 @@
 
 					var fullData   = $( this ),
 					selectData     = fullData.closest( '.value' ).find( 'select' ),
-					attribute_name = fullData.closest( '.value' ).children(".wc-ever-swatches").attr( "data-attribute_name" ),
+					attribute_name = fullData.closest( '.value' ).children('.wc-ever-swatches').attr( 'data-attribute_name'),
 					optionValue    = fullData.data( 'value' );
 
 					selectData.trigger( 'focusin' );
 
-					if ( ! selectData.find( 'option[value="' + optionValue + '"]' ).length ) {
+					if ( ! selectData.find( 'option[value=\'' + optionValue + '\']' ).length ) {
 						fullData.siblings( '.swatch' ).removeClass( 'selected' );
 					
 						selectData.val( '' ).change();
@@ -46,10 +46,12 @@
 
 					selectData.change();
 				} )
+
 				.on( 'click', '.reset_variations', function () {
 					$( this ).closest( '.variations_form' ).find( '.swatch.selected' ).removeClass( 'selected' );
 					selected = [];
 				} )
+
 				.on( 'ever_no_matching_variations', function() {
 					window.alert( wc_add_to_cart_variation_params.i18n_no_matching_variations_text );
 				} );
