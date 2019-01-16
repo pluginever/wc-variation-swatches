@@ -112,7 +112,9 @@ class Attribute_Handler {
 		?>
 
 		<tr class="form-field term-slug-wrap">
-			<th scope="row"><label for="term-slug">Term</label></th>
+			<th scope="row">
+				<label for="term-slug">Term</label>
+			</th>
 			<td>
 
 				<?php echo wc_variation_swatches_get_field($attribute_tax->attribute_type, $value); ?>
@@ -142,8 +144,8 @@ class Attribute_Handler {
 		}
 
 		//save image type attribute terms images
-		if (!empty($_REQUEST['wcvs-image'])) {
-			update_term_meta($term_id, 'wcvs-image', esc_attr($_REQUEST['wcvs-image']));
+		if (!empty($_REQUEST['image'])) {
+			update_term_meta($term_id, 'image', esc_attr($_REQUEST['image']));
 		}
 
 	}
@@ -201,18 +203,18 @@ class Attribute_Handler {
 
 		switch ($attribute_tax->attribute_type) {
 
-			case 'wcvs-color':
+			case 'color':
 				printf('<div class="wc-variation-swatches-preview swatches-type-color" style="background-color:%s;"></div>', esc_attr($value));
 				break;
 
-			case 'wcvs-image':
+			case 'image':
 				$image = !empty($value) ? wp_get_attachment_image_src($value) : '';
 				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
 				printf('<img class="wc-variation-swatches-preview swatches-type-image" src="%s" width="44px" height="44px">', esc_url($image));
 				break;
 
-			case 'wcvs-label':
+			case 'label':
 				printf('<div class="wc-variation-swatches-preview swatches-type-label">%s</div>', esc_html($value));
 				break;
 		}

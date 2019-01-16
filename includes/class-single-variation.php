@@ -176,8 +176,8 @@ class Single_Variation {
         }
 
         switch ($attr->attribute_type) {
-            case 'wcvs-color':
-                $color = get_term_meta($term->term_id, 'wcvs-color', true);
+            case 'color':
+                $color = get_term_meta($term->term_id, 'color', true);
                 list($r, $g, $b) = sscanf($color, "#%02x%02x%02x");
                 $html = sprintf(
                     '<div class="swatch %s %s wcvs-attr-enable wcvs-attr-behaviour wcvs-swatch-color swatch-%s %s" style="background-color:%s;color:%s; width:%s; height:%s;" title="%s" data-value="%s"><span class="%s" style="background-color:%s; color:%s; font-size:%s;">%s</span></div>',
@@ -199,8 +199,8 @@ class Single_Variation {
                 );
                 break;
 
-            case 'wcvs-image':
-                $image = get_term_meta($term->term_id, 'wcvs-image', true);
+            case 'image':
+                $image = get_term_meta($term->term_id, 'image', true);
                 $image = $image ? wp_get_attachment_image_src($image) : '';
                 $image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
@@ -225,8 +225,8 @@ class Single_Variation {
                 );
                 break;
 
-            case 'wcvs-label':
-                $label = get_term_meta($term->term_id, 'wcvs-label', true);
+            case 'label':
+                $label = get_term_meta($term->term_id, 'label', true);
                 $label = $label ? $label : $name;
                 $html  = sprintf(
                     '<div style="width:%s; height: %s;" class="swatch %s wcvs-swatch-label %s swatch-%s %s" title="%s" data-value="%s">%s<span class="%s" style="background-color:%s; color:%s; font-size:%s;">%s</span></div>',

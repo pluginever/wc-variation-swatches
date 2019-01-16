@@ -15,7 +15,7 @@ window.wc_variation_swatches = (function (window, document, $, undefined) {
 	var app = {
 
 		initialize: function () {
-			$('#term-wcvs-color').wpColorPicker();
+			$('#term-color').wpColorPicker();
 			$(document).on('click', '.wc-variation-swatches-upload-image', wc_variation_swatches.handle_term_image_upload);
 			$(document).on('click', '.wc-variation-swatches-remove-image', wc_variation_swatches.remove_term_image);
 			$(document).on('submit', '#addtag', wc_variation_swatches.clear_term_add_form);
