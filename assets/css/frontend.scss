@@ -1,0 +1,221 @@
+.hidden{
+	display: none !important;
+  visibility: hidden !important;
+}
+.round-box {
+  // width:  40px;
+  // height: 40px;
+  text-align: center;
+  display: table;
+  border-radius: 50px;
+  position: relative; 
+  background: #23466e;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  cursor: pointer;
+  display:inline-block;
+  color: #fff;
+  margin: 8px 15px; 
+  opacity: 0.6;
+  background: rgba(0,0,0,0.6);
+.wcvs-color-tooltip{
+  opacity: 1;
+}
+
+  &.wcvs-attr-behaviour{
+    
+  }
+  &.wcvs-border-style{
+    &:before {
+      position: absolute;
+      width: calc(100% + 8px);
+      height: calc(100% + 8px);
+      left: -6px;
+      top: -6px;
+      content: "";
+      border-radius: 50px;
+      border: 2px solid #4d5f4f;
+      z-index: -1;
+      -webkit-transition: .35s;
+      -o-transition: .35s;
+      transition: .35s;
+    }
+  }
+  
+  &:hover:before {
+    -webkit-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    -o-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+}
+
+.square-box {
+  width: 40px;
+  height: 40px;
+  background: #23466e;
+  text-align: center;
+  display: table;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  cursor: pointer;
+  display:inline-block;
+  margin: 8px 15px;
+  color: #fff;
+  opacity: 0.6;
+  &.wcvs-border-style{
+    &:before {
+      position: absolute;
+      width: calc(100% + 8px);
+      height: calc(100% + 8px);
+      left: -6px;
+      top: -6px;
+      content: "";
+      border: 2px solid #4d5f4f;
+      z-index: -1;
+      -webkit-transition: .35s;
+      -o-transition: .35s;
+      transition: .35s;
+    }
+  }
+  &:hover:before {
+    -webkit-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    -o-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+}
+
+.round-box-image {
+  width:  40px;
+  height: 40px;
+  text-align: center;
+  display: table;
+  border-radius: 50px;
+  position: relative; 
+  padding: 0;
+  z-index: 1;
+  cursor: pointer;
+  display:inline-block;
+  color: #fff;
+  margin: 8px 15px;
+  opacity: 0.6;
+  &.wcvs-border-style{
+    &:before {
+      position: absolute;
+      width: calc(100% + 8px);
+      height: calc(100% + 8px);
+      left: -6px;
+      top: -6px;
+      content: "";
+      border-radius: 50px;
+      border: 2px solid #4d5f4f;
+      z-index: -1;
+      -webkit-transition: .35s;
+      -o-transition: .35s;
+      transition: .35s;
+    }
+  }
+  &:hover:before {
+    -webkit-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    -o-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+  img{
+    border-radius: 50px;
+  }
+  // span {
+  //   color: #fff;
+  //   display: table-cell;
+  //   vertical-align: middle;
+  // }
+}
+
+.square-box-image {
+  width:  40px;
+  height: 40px;
+  text-align: center;
+  display: table;
+  position: relative; 
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+  cursor: pointer;
+  display:inline-block;
+  color: #fff;
+  margin: 8px 15px;
+  opacity: 0.6;
+  &.wcvs-border-style{
+    &:before {
+      position: absolute;
+      width: calc(100% + 8px);
+      height: calc(100% + 8px);
+      left: -6px;
+      top: -6px;
+      content: "";
+      border: 2px solid #4d5f4f;
+      z-index: -1;
+      -webkit-transition: .35s;
+      -o-transition: .35s;
+      transition: .35s;
+    }
+  }
+  &:hover:before {
+    -webkit-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    -o-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+  img{
+  }
+}
+
+.wcvs-color-tooltip{
+  visibility: hidden;
+  width: 120px;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+
+  &:after{
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+}
+
+.round-box:hover .wcvs-color-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+.round-box-image:hover .wcvs-color-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+.square-box:hover .wcvs-color-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+.square-box-image:hover .wcvs-color-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+.selected {
+  opacity : 1;
+}

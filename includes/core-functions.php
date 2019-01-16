@@ -3,9 +3,9 @@
 
 function wc_variation_swatches_types() {
 	$types = array(
-		'color' => esc_html__( 'Color', 'wc-variation-swatches' ),
-		'image' => esc_html__( 'Image', 'wc-variation-swatches' ),
-		'label' => esc_html__( 'Label', 'wc-variation-swatches' ),
+		'wcvs-color' => esc_html__( 'Color', 'wc-variation-swatches' ),
+		'wcvs-image' => esc_html__( 'Image', 'wc-variation-swatches' ),
+		'wcvs-label' => esc_html__( 'Label', 'wc-variation-swatches' ),
 	);
 
 	return apply_filters( 'wc_variation_swatches_types', $types );
@@ -39,7 +39,8 @@ function wc_variation_swatches_get_attr_tax_by_name( $taxonomy_name ) {
 function wc_variation_swatches_get_field( $type, $value = null ) {
 
 	switch ( $type ) {
-		case 'image':
+
+		case 'wcvs-image':
 			$image = $value ? wp_get_attachment_image_src( $value ) : '';
 			$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 			?>
@@ -47,7 +48,7 @@ function wc_variation_swatches_get_field( $type, $value = null ) {
 				<img src="<?php echo esc_url( $image ) ?>" width="60px" height="60px"/>
 			</div>
 			<div style="line-height:60px;">
-				<input type="hidden" class="wc-variation-swatches-term-image" name="image" value="<?php echo esc_attr( $value ) ?>"/>
+				<input type="hidden" class="wc-variation-swatches-term-image" name="wcvs-image" value="<?php echo esc_attr( $value ) ?>"/>
 				<button type="button" class="wc-variation-swatches-upload-image button"><?php esc_html_e( 'Upload/Add image', 'wc-variation-swatches' ); ?></button>
 				<button type="button" class="wc-variation-swatches-remove-image button <?php echo $value ? '' : 'hidden' ?>"><?php esc_html_e( 'Remove image', 'wc-variation-swatches' ); ?></button>
 			</div>
@@ -57,4 +58,5 @@ function wc_variation_swatches_get_field( $type, $value = null ) {
 		default:
 			echo '<input type="text" id="term-' . esc_attr( $type ) . '" name="' . esc_attr( $type ) . '" value="' . esc_attr( $value ) . '" />';
 	}
+
 }
