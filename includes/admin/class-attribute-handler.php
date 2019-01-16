@@ -60,9 +60,9 @@ class Attribute_Handler {
 
 		<div class="form-field term-slug-wrap">
 
-			<label for="tag-slug">Term</label>
+			<label for="tag-slug"><?php wc_variation_swatches_field_label($attribute_tax->attribute_type) ?></label>
 
-			<?php echo wc_variation_swatches_get_field($attribute_tax->attribute_type, null); ?>
+			<?php wc_variation_swatches_field($attribute_tax->attribute_type, null); ?>
 
 		</div>
 
@@ -113,11 +113,11 @@ class Attribute_Handler {
 
 		<tr class="form-field term-slug-wrap">
 			<th scope="row">
-				<label for="term-slug">Term</label>
+				<label for="term-slug"><?php wc_variation_swatches_field_label($attribute_tax->attribute_type); ?></label>
 			</th>
 			<td>
 
-				<?php echo wc_variation_swatches_get_field($attribute_tax->attribute_type, $value); ?>
+				<?php wc_variation_swatches_field($attribute_tax->attribute_type, $value); ?>
 
 			</td>
 		</tr>
@@ -163,7 +163,9 @@ class Attribute_Handler {
 	 function add_attribute_columns($columns) {
 
 		$new_columns          = array();
-		$new_columns['cb']    = $columns['cb'];
+
+		$new_columns['cb']    = !empty($columns['cb']) ? $columns['cb'] : '';
+
 		$new_columns['thumb'] = '';
 
 		unset($columns['cb']);
