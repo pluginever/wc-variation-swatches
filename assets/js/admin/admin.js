@@ -55,7 +55,7 @@ window.wc_variation_swatches = (function (window, document, $, undefined) {
 
 		remove_term_image: function (e) {
 			e.preventDefault();
-			// var $button = $(this);
+			var $button = $(this);
 		},
 
 		clear_term_add_form:function (e) {

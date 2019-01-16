@@ -121,3 +121,5 @@ function wc_variation_swatches_field_label( $type ) {
 			_e('Term', 'wc-variation-swatches');
 	}
 }
+
+

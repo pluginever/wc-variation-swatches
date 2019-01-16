@@ -10,3 +10,30 @@
 	align-items: center;
 	height: 60px;
 }
+
+#wc_variation_swatches_settings{
+	.iris-picker.iris-border{
+		min-width: 260px;
+		min-height: 240px;
+	}
+}
+
+.shape_style_heading, .tooltip_heading, .border_heading{
+	display: flex;
+	flex-flow: column;
+	margin-bottom: 15px !important;
+
+	th, td{
+		padding: 0 !important;
+	}
+
+	label{
+		font-size: 18px;
+	}
+
+	h2{
+		width: 50% !important;
+		position: absolute;
+		padding: 5px !important;
+	}
+}

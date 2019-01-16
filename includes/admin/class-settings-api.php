@@ -188,6 +188,21 @@ namespace Pluginever\WCVariationSwatches\Admin;
          *
          * @param array $args settings field args
          */
+        function callback_heading( $args ) {
+
+            $value       = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
+
+            $html        = sprintf( '<h2 class="wc_variation_swatches_settings_heading">%s</h2>', $value );
+            $html        .= $this->get_field_description( $args );
+
+            echo $html;
+        }
+
+        /**
+         * Displays a text field for a settings field
+         *
+         * @param array $args settings field args
+         */
         function callback_text( $args ) {
             $value       = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
             $size        = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
@@ -267,12 +282,13 @@ namespace Pluginever\WCVariationSwatches\Admin;
          * @param array $args settings field args
          */
         function callback_radio( $args ) {
+
             $value = $this->get_option( $args['id'], $args['section'], $args['std'] );
             $html  = '<fieldset>';
             foreach ( $args['options'] as $key => $label ) {
-                $html .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">', $args['section'], $args['id'], $key );
+                $html .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]" style="margin-right: 30px !important;">', $args['section'], $args['id'], $key );
                 $html .= sprintf( '<input type="radio" class="radio" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s" %4$s />', $args['section'], $args['id'], $key, checked( $value, $key, false ) );
-                $html .= sprintf( '%1$s</label><br>', $label );
+                $html .= sprintf( '%1$s</label>', $label );
             }
             $html .= $this->get_field_description( $args );
             $html .= '</fieldset>';

@@ -229,7 +229,7 @@ final class WCVariationSwatches {
         // Localize our plugin
         add_action( 'init', array( $this, 'localization_setup' ) );
 
-        //add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
+        add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
     }
 
     /**
@@ -251,7 +251,7 @@ final class WCVariationSwatches {
      * @return array
      */
     public function plugin_action_links( $links ) {
-        //$links[] = '<a href="' . admin_url( 'admin.php?page=' ) . '">' . __( 'Settings', '' ) . '</a>';
+        $links[] = '<a href="' . admin_url( 'admin.php?page=wc-variation-swatches' ) . '">' . __( 'Settings', '' ) . '</a>';
         return $links;
     }
 
