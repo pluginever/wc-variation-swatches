@@ -4,6 +4,14 @@ namespace Pluginever\WCVariationSwatches;
 
 class Single_Variation {
 
+	public $color = '';
+	public $shape_width = '';
+	public $shape_height = '';
+	public $tooltip_bg_color = '';
+	public $font_size = '';
+	public $tooltip_text_color = '';
+	public $border_color = '';
+
 	public function __construct() {
 		add_action('init', array($this, 'initialize_settings'), 10, 1);
 	}
@@ -15,7 +23,9 @@ class Single_Variation {
 		if ($stylesheet === 'on') {
 			add_filter('woocommerce_dropdown_variation_attribute_options_html', array($this, 'render_variable_swatch_style'), 100, 2);
 			add_filter('wc_variation_swatch_attribute_html', array($this, 'wc_variation_swatch_attribute_html'), 5, 4);
+			add_action('wp_footer', array($this, 'render_variable_swatch_css'));
 		}
+
 	}
 
 	/**
@@ -91,15 +101,17 @@ class Single_Variation {
 		$selected = sanitize_title($args['selected']) == $term->slug ? 'selected' : '';
 		$name     = esc_html($term->name);
 
-		$shape_style         = wc_variation_swatches_get_settings('shape_style', 'round', 'wc_variation_swatches_settings');
-		$enable_tooltip      = wc_variation_swatches_get_settings('enable_tooltip', 'on', 'wc_variation_swatches_settings');
-		$border              = wc_variation_swatches_get_settings('border', 'enable', 'wc_variation_swatches_settings');
-		$shape_width         = wc_variation_swatches_get_settings('width', '15px', 'wc_variation_swatches_settings');
-		$shape_height        = wc_variation_swatches_get_settings('height', '15px', 'wc_variation_swatches_settings');
-		$tooltip_bg_color    = wc_variation_swatches_get_settings('tooltip_bg_color', '', 'wc_variation_swatches_settings');
-		$font_size           = wc_variation_swatches_get_settings('font_size', '15px', 'wc_variation_swatches_settings');
-		$tooltip_text_color  = wc_variation_swatches_get_settings('tooltip_text_color', '', 'wc_variation_swatches_settings');
-		$border_color        = wc_variation_swatches_get_settings('border_color', '', 'wc_variation_swatches_settings');
+		$shape_style    = wc_variation_swatches_get_settings('shape_style', 'round', 'wc_variation_swatches_settings');
+		$enable_tooltip = wc_variation_swatches_get_settings('enable_tooltip', 'on', 'wc_variation_swatches_settings');
+		$border         = wc_variation_swatches_get_settings('border', 'enable', 'wc_variation_swatches_settings');
+
+		$this->shape_width        = wc_variation_swatches_get_settings('width', '15px', 'wc_variation_swatches_settings');
+		$this->shape_height       = wc_variation_swatches_get_settings('height', '15px', 'wc_variation_swatches_settings');
+		$this->tooltip_bg_color   = wc_variation_swatches_get_settings('tooltip_bg_color', '', 'wc_variation_swatches_settings');
+		$this->font_size          = wc_variation_swatches_get_settings('font_size', '15px', 'wc_variation_swatches_settings');
+		$this->tooltip_text_color = wc_variation_swatches_get_settings('tooltip_text_color', '', 'wc_variation_swatches_settings');
+		$this->border_color       = wc_variation_swatches_get_settings('border_color', '', 'wc_variation_swatches_settings');
+		$this->color              = get_term_meta($term->term_id, 'color', true);
 
 
 		$border_style = ($border == 'enable') ? 'wcvs-border-style' : 'wcvs-border-style-none';
@@ -109,14 +121,13 @@ class Single_Variation {
 
 		$class_shape       = $shape_style . '-box';
 		$class_shape_image = $shape_style . '-box-image';
-		$class = join(' ', ['swatch', $class_shape, $border_style, 'swatch-' . $term->slug, $selected]);
+		$class             = join(' ', ['swatch', $class_shape, $border_style, 'swatch-' . $term->slug, $selected]);
 
-		$color = get_term_meta($term->term_id, 'color', true);
 
 		switch ($attr->attribute_type) {
 
 			case 'color':
-				$html = sprintf('<div class="wcvs-swatch-color %s" title="%s" data-value="%s">'.$tooltip_html.'</div>', $class, $name, $term->slug);
+				$html = sprintf('<div class="wcvs-swatch-color %s" title="%s" data-value="%s">' . $tooltip_html . '</div>', $class, $name, $term->slug);
 				break;
 
 			case 'image':
@@ -124,17 +135,15 @@ class Single_Variation {
 				$image = $image ? wp_get_attachment_image_src($image) : '';
 				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
-				$html = sprintf('<div class="wcvs-swatch-image %s %s" title="%s" data-value="%s"><img src="%s" alt="%2$s">'.$tooltip_html.'</div>', $class, $class_shape_image, $name, $term->slug, $image);
+				$html = sprintf('<div class="wcvs-swatch-image %s %s" title="%s" data-value="%s"><img src="%s" alt="%2$s">' . $tooltip_html . '</div>', $class, $class_shape_image, $name, $term->slug, $image);
 				break;
 
 			case 'label':
 				$label = get_term_meta($term->term_id, 'label', true);
 				$label = $label ? $label : $name;
-				$html  = sprintf('<div class="wcvs-swatch-label %s" title="%s" data-value="%s">%s'.$tooltip_html.'</div>', $class, $name, $term->slug);
+				$html  = sprintf('<div class="wcvs-swatch-label %s" title="%s" data-value="%s">%s' . $tooltip_html . '</div>', $class, $name, $term->slug, $label);
 				break;
 		}
-
-		echo $this->style($color, $shape_width, $shape_height, $tooltip_bg_color, $font_size, $tooltip_text_color);
 
 		return $html;
 
@@ -148,29 +157,34 @@ class Single_Variation {
 	 * @return string style
 	 */
 
-	function style($color, $shape_width, $shape_height, $tooltip_bg_color, $font_size, $tooltip_text_color) {
+	function render_variable_swatch_css() {
 
-		list($r, $g, $b) = sscanf($color, "#%02x%02x%02x");
+		list($r, $g, $b) = sscanf($this->color, "#%02x%02x%02x");
 		$rgb = join(', ', [$r, $g, $b]);
+
 
 		?>
 
 		<style type="text/css">
 
 			.wcvs-color-tooltip {
-				background-color: <?php echo $tooltip_bg_color ?>;
-				color: <?php echo $tooltip_text_color ?>;
-				font-size: <?php echo $font_size ?>;
+				background-color: <?php echo $this->tooltip_bg_color ?>;
+				color: <?php echo $this->tooltip_text_color ?>;
+				font-size: <?php echo $this->font_size ?>;
 			}
 
-			.wcvs-swatch-image, .wcvs-swatch-label, .wcvs-swatch-color{
-				width: <?php echo $shape_width ?>;
-				height: <?php echo $shape_height ?>;
+			.wcvs-swatch-image, .wcvs-swatch-label, .wcvs-swatch-color {
+				width: <?php echo $this->shape_width ?>;
+				height: <?php echo $this->shape_height ?>;
 			}
 
 			.wcvs-swatch-color {
-				background-color: <?php echo $color ?>;
+				background-color: <?php echo $this->color ?>;
 				color: rgba(<?php echo $rgb ?>, 0.5);
+			}
+
+			.square-box.wcvs-border-style:before {
+				border: 2px solid<?php echo $this->border_color ?>;
 			}
 
 		</style>
