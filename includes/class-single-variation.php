@@ -127,7 +127,7 @@ class Single_Variation {
 			case 'color':
 				$this->color = get_term_meta($term->term_id, 'color', true);
 
-				$html        = sprintf('<div class="wcvs-swatch-color %s" style="background: '.$this->color.';" title="%s" data-value="%s"><div class="variation_check"></div>' . $tooltip_html . '</div>', $class, $name, $term->slug);
+				$html        = sprintf('<div class="wcvs-swatch-color %s" title="%s" data-value="%s"><div class="variation_check"  style="background: '.$this->color.';"></div>' . $tooltip_html . '</div>', $class, $name, $term->slug);
 				break;
 
 			case 'image':
@@ -135,7 +135,7 @@ class Single_Variation {
 				$image = $image ? wp_get_attachment_image_src($image) : '';
 				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
-				$html = sprintf('<div class="wcvs-swatch-image %s %s" title="%s" data-value="%s"><img src="%s" alt="%2$s"><div class="variation_check"></div>' . $tooltip_html . '</div>', $class, $class_shape_image, $name, $term->slug, $image);
+				$html = sprintf('<div class="wcvs-swatch-image %s %s" title="%s" data-value="%s"><div class="variation_check" style="background: url(\''.$image.'\');"></div>' . $tooltip_html . '</div>', $class, $class_shape_image, $name, $term->slug, $image);
 				break;
 
 			case 'label':
@@ -176,18 +176,17 @@ class Single_Variation {
 				font-size: <?php echo $this->font_size ?>;
 			}
 
-			.wcvs-swatch-image, .wcvs-swatch-label, .wcvs-swatch-color {
+			.wcvs-swatch-image>.variation_check, .wcvs-swatch-label>.variation_check, .wcvs-swatch-color>.variation_check {
 				width: <?php echo $this->shape_width ?>;
 				height: <?php echo $this->shape_height ?>;
 			}
 
-			.wcvs-swatch-color {
-				background-color: <?php echo $this->color ?>;
-				color: rgba(<?php echo $rgb ?>, 0.5);
+			.round-box.wcvs-border-style, .square-box.wcvs-border-style {
+				border: 2px solid rgba(<?php echo $brgb ?>, 0.5);
 			}
 
-			.round-box.wcvs-border-style:before, .square-box.wcvs-border-style:before {
-				border: 2px solid rgba(<?php echo $brgb ?>, 0.5);
+			.round-box.selected.wcvs-border-style, .square-box.selected.wcvs-border-style {
+				border: 2px solid rgba(<?php echo $brgb ?>, 1);
 			}
 
 		</style>

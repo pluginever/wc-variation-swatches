@@ -184,14 +184,6 @@ class Settings {
 					'default' => '#555',
 				),
 
-//				array(
-//					'name'    => 'border_active_color',
-//					'label'   => __('Active Border Color', 'wc-variation-swatches'),
-//					'desc'    => __('Active border color, when a swatch will be selected .', 'wc-variation-swatches'),
-//					'type'    => 'color',
-//					'default' => '#81d742',
-//				),
-
 			),
 		);
 
@@ -208,8 +200,8 @@ class Settings {
 
 		add_submenu_page(
 			'edit.php?post_type=product',
-			__('Settings - WC Variation Swatches', 'wc-variation-swatches'),
-			__('Variation Swatches', 'wc-variation-swatches'),
+			__('WC Variation Swatches', 'wc-variation-swatches'),
+			__('WC Variation Swatches', 'wc-variation-swatches'),
 			'manage_options',
 			'wc-variation-swatches',
 			array($this, 'settings_page')
