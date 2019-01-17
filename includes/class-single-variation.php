@@ -111,7 +111,6 @@ class Single_Variation {
 		$this->font_size          = wc_variation_swatches_get_settings('font_size', '15px', 'wc_variation_swatches_settings');
 		$this->tooltip_text_color = wc_variation_swatches_get_settings('tooltip_text_color', '', 'wc_variation_swatches_settings');
 		$this->border_color       = wc_variation_swatches_get_settings('border_color', '', 'wc_variation_swatches_settings');
-		$this->color              = get_term_meta($term->term_id, 'color', true);
 
 
 		$border_style = ($border == 'enable') ? 'wcvs-border-style' : 'wcvs-border-style-none';
@@ -123,11 +122,12 @@ class Single_Variation {
 		$class_shape_image = $shape_style . '-box-image';
 		$class             = join(' ', ['swatch', $class_shape, $border_style, 'swatch-' . $term->slug, $selected]);
 
-
 		switch ($attr->attribute_type) {
 
 			case 'color':
-				$html = sprintf('<div class="wcvs-swatch-color %s" title="%s" data-value="%s">' . $tooltip_html . '</div>', $class, $name, $term->slug);
+				$this->color = get_term_meta($term->term_id, 'color', true);
+
+				$html        = sprintf('<div class="wcvs-swatch-color %s" style="background: '.$this->color.';" title="%s" data-value="%s"><div class="variation_check"></div>' . $tooltip_html . '</div>', $class, $name, $term->slug);
 				break;
 
 			case 'image':
@@ -135,13 +135,13 @@ class Single_Variation {
 				$image = $image ? wp_get_attachment_image_src($image) : '';
 				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
-				$html = sprintf('<div class="wcvs-swatch-image %s %s" title="%s" data-value="%s"><img src="%s" alt="%2$s">' . $tooltip_html . '</div>', $class, $class_shape_image, $name, $term->slug, $image);
+				$html = sprintf('<div class="wcvs-swatch-image %s %s" title="%s" data-value="%s"><img src="%s" alt="%2$s"><div class="variation_check"></div>' . $tooltip_html . '</div>', $class, $class_shape_image, $name, $term->slug, $image);
 				break;
 
 			case 'label':
 				$label = get_term_meta($term->term_id, 'label', true);
 				$label = $label ? $label : $name;
-				$html  = sprintf('<div class="wcvs-swatch-label %s" title="%s" data-value="%s">%s' . $tooltip_html . '</div>', $class, $name, $term->slug, $label);
+				$html  = sprintf('<div class="wcvs-swatch-label %s" title="%s" data-value="%s">%s' . $tooltip_html . '</div><div class="variation_check"></div>', $class, $name, $term->slug, $label);
 				break;
 		}
 
@@ -161,6 +161,9 @@ class Single_Variation {
 
 		list($r, $g, $b) = sscanf($this->color, "#%02x%02x%02x");
 		$rgb = join(', ', [$r, $g, $b]);
+
+		list($br, $bg, $bb) = sscanf($this->border_color, "#%02x%02x%02x");
+		$brgb = join(', ', [$br, $bg, $bb]);
 
 
 		?>
@@ -183,8 +186,8 @@ class Single_Variation {
 				color: rgba(<?php echo $rgb ?>, 0.5);
 			}
 
-			.square-box.wcvs-border-style:before {
-				border: 2px solid<?php echo $this->border_color ?>;
+			.round-box.wcvs-border-style:before, .square-box.wcvs-border-style:before {
+				border: 2px solid rgba(<?php echo $brgb ?>, 0.5);
 			}
 
 		</style>

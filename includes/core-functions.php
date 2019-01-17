@@ -140,5 +140,14 @@ function wc_variation_swatches_get_settings($key, $default = '', $section = '') 
 	return !empty($option[$key]) ? $option[$key] : $default;
 }
 
+function wcbv_variation_is_active( $active, $variation ) {
+	if( ! $variation->is_in_stock() ) {
+		return false;
+	}
+	return $active;
+}
+add_filter( 'woocommerce_variation_is_active', 'wcbv_variation_is_active', 10, 2 );
+
+
 
 

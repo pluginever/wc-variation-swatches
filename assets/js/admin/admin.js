@@ -24,6 +24,8 @@
 			app.settings_display();
 			$(document).on('click', '.enable_stylesheet_check input[type=checkbox]', app.settings_display);
 
+			$(document).on('click', '.round-box.wcvs-border-style, .square-box.wcvs-border-style', app.border_style);
+
 		},
 
 		settings_display: function(){
@@ -38,7 +40,6 @@
 			}
 
 		},
-
 
 		handle_term_image_upload: function (e) {
 
@@ -88,6 +89,10 @@
 
 		clear_term_add_form:function () {
 
+		},
+
+		border_style: function () {
+			alert('Hello');
 		}
 	};
 
