@@ -85,15 +85,8 @@
 			$button.parent().prev('.wc-variation-swatches-preview').find('img').attr('src', wpwvs.placeholder_img);
 			$button.hide();
 
-		},
-
-		clear_term_add_form:function () {
-
-		},
-
-		border_style: function () {
-			alert('Hello');
 		}
+
 	};
 
 	$(document).ready(app.initialize);

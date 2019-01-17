@@ -251,7 +251,7 @@ final class WCVariationSwatches {
      * @return array
      */
     public function plugin_action_links( $links ) {
-        $links[] = '<a href="' . admin_url( 'admin.php?page=wc-variation-swatches' ) . '">' . __( 'Settings', '' ) . '</a>';
+        $links[] = '<a href="' . admin_url( 'admin.php?page=wc-variation-swatches' ) . '">' . __( 'Settings', 'wc-variation-swatches' ) . '</a>';
         return $links;
     }
 

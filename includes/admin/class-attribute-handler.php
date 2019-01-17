@@ -246,7 +246,7 @@ class Attribute_Handler {
 
 		?>
 
-		<select multiple="multiple" data-placeholder="<?php esc_attr_e('Select terms', 'wcvs'); ?>" class="multiselect attribute_values wc-enhanced-select" name="attribute_values[<?php echo $index; ?>][]">
+		<select multiple="multiple" data-placeholder="<?php esc_attr_e('Select terms', 'wc-variation-swatches'); ?>" class="multiselect attribute_values wc-enhanced-select" name="attribute_values[<?php echo $index; ?>][]">
 
 			<?php
 
@@ -261,9 +261,9 @@ class Attribute_Handler {
 			?>
 
 		</select>
-		<button class="button plus select_all_attributes"><?php esc_html_e('Select all', 'wcvs'); ?></button>
-		<button class="button minus select_no_attributes"><?php esc_html_e('Select none', 'wcvs'); ?></button>
-		<button class="button fr plus tawcvs_add_new_attribute" data-type="<?php echo $taxonomy->attribute_type ?>"><?php esc_html_e('Add new', 'wcvs'); ?></button>
+		<button class="button plus select_all_attributes"><?php esc_html_e('Select all', 'wc-variation-swatches'); ?></button>
+		<button class="button minus select_no_attributes"><?php esc_html_e('Select none', 'wc-variation-swatches'); ?></button>
+		<button class="button fr plus tawcvs_add_new_attribute" data-type="<?php echo $taxonomy->attribute_type ?>"><?php esc_html_e('Add new', 'wc-variation-swatches'); ?></button>
 
 		<?php
 	}
