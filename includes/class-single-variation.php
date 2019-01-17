@@ -100,7 +100,6 @@ class Single_Variation {
 		$font_size           = wc_variation_swatches_get_settings('font_size', '15px', 'wc_variation_swatches_settings');
 		$tooltip_text_color  = wc_variation_swatches_get_settings('tooltip_text_color', '', 'wc_variation_swatches_settings');
 		$border_color        = wc_variation_swatches_get_settings('border_color', '', 'wc_variation_swatches_settings');
-		$border_active_color = wc_variation_swatches_get_settings('border_active_color', '', 'wc_variation_swatches_settings');
 
 
 		$border_style = ($border == 'enable') ? 'wcvs-border-style' : 'wcvs-border-style-none';
@@ -115,6 +114,7 @@ class Single_Variation {
 		$color = get_term_meta($term->term_id, 'color', true);
 
 		switch ($attr->attribute_type) {
+
 			case 'color':
 				$html = sprintf('<div class="wcvs-swatch-color %s" title="%s" data-value="%s">'.$tooltip_html.'</div>', $class, $name, $term->slug);
 				break;

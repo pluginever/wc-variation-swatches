@@ -56,7 +56,11 @@ class Settings {
 					'class'   => 'enable_stylesheet_check',
 				),
 
-				//Shape
+				/**
+				 * ====================
+				 * Shape
+				 * ====================
+				 */
 
 				array(
 					'name'  => 'shape_style_heading',
@@ -105,7 +109,12 @@ class Settings {
 					'default' => '30px',
 				),
 
-				//Tooltip
+				/**
+				 * =====================
+				 * Tooltip
+				 * =====================
+				 */
+
 
 				array(
 					'name'  => 'tooltip_heading',
@@ -143,7 +152,11 @@ class Settings {
 					'default' => '#fff',
 				),
 
-				//Border
+				/**
+				 * =====================
+				 * Border
+				 * =====================
+				 */
 
 				array(
 					'name'  => 'border_heading',
@@ -171,13 +184,13 @@ class Settings {
 					'default' => '#555',
 				),
 
-				array(
-					'name'    => 'border_active_color',
-					'label'   => __('Active Border Color', 'wc-variation-swatches'),
-					'desc'    => __('Active border color, when a swatch will be selected .', 'wc-variation-swatches'),
-					'type'    => 'color',
-					'default' => '#81d742',
-				),
+//				array(
+//					'name'    => 'border_active_color',
+//					'label'   => __('Active Border Color', 'wc-variation-swatches'),
+//					'desc'    => __('Active border color, when a swatch will be selected .', 'wc-variation-swatches'),
+//					'type'    => 'color',
+//					'default' => '#81d742',
+//				),
 
 			),
 		);
