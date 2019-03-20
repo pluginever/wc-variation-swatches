@@ -31,7 +31,9 @@
  */
 
 // don't call the file directly
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 /**
  * Main initiation class
  *
@@ -44,252 +46,232 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * @class WCVariationSwatches
  */
 final class WCVariationSwatches {
-    /**
-     * WCVariationSwatches version.
-     *
-     * @var string
-     */
-    public $version = '1.0.0';
+	/**
+	 * WCVariationSwatches version.
+	 *
+	 * @var string
+	 */
+	public $version = '1.0.0';
 
-    /**
-     * Minimum PHP version required
-     *
-     * @var string
-     */
-    private $min_php = '5.6.0';
+	/**
+	 * Minimum PHP version required
+	 *
+	 * @var string
+	 */
+	private $min_php = '5.6.0';
 
-    /**
-     * The single instance of the class.
-     *
-     * @var WCVariationSwatches
-     * @since 1.0.0
-     */
-    protected static $instance = null;
+	/**
+	 * admin notices
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array
+	 */
+	protected $notices = array();
 
+	/**
+	 * The single instance of the class.
+	 *
+	 * @var WCVariationSwatches
+	 * @since 1.0.0
+	 */
+	protected static $instance = null;
 
-    /**
-     * Holds various class instances
-     *
-     * @var array
-     */
-    private $container = array();
+	/**
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	public $plugin_name = 'WC Variation Swatches';
 
-    /**
-     * Main WCVariationSwatches Instance.
-     *
-     * Ensures only one instance of WCVariationSwatches is loaded or can be loaded.
-     *
-     * @since 1.0.0
-     * @static
-     * @return WCVariationSwatches - Main instance.
-     */
-    public static function instance() {
-        if ( is_null( self::$instance ) ) {
-            self::$instance = new self();
-            self::$instance->setup();
-        }
+	/**
+	 * WCVariationSwatches constructor.
+	 */
+	public function __construct() {
+		register_activation_hook( __FILE__, array( $this, 'activation_check' ) );
+		add_action( 'admin_notices', array( $this, 'admin_notices' ), 15 );
+		add_action( 'init', array( $this, 'localization_setup' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
+		if ( $this->is_plugin_compatible() ) {
+			$this->define_constants();
+			$this->includes();
+		}
+	}
 
-        return self::$instance;
-    }
+	/**
+	 * Checks the server environment and other factors and deactivates plugins as necessary.
+	 *
+	 * @internal
+	 *
+	 * @since 1.0.0
+	 */
+	public function activation_check() {
 
-    /**
-     * Cloning is forbidden.
-     *
-     * @since 1.0
-     */
-    public function __clone() {
-        _doing_it_wrong( __FUNCTION__, __( 'Cloning is forbidden.', 'wc-variation-swatches' ), '1.0.0' );
-    }
+		if ( ! version_compare( PHP_VERSION, $this->min_php, '>=' ) ) {
 
-    /**
-     * Unserializing instances of this class is forbidden.
-     *
-     * @since 1.0
-     */
-    public function __wakeup() {
-        _doing_it_wrong( __FUNCTION__, __( 'Unserializing instances of this class is forbidden.', 'wc-variation-swatches' ), '2.1' );
-    }
+			deactivate_plugins( plugin_basename( __FILE__ ) );
 
-    /**
-     * Magic getter to bypass referencing plugin.
-     *
-     * @param $prop
-     *
-     * @return mixed
-     */
-    public function __get( $prop ) {
-        if ( array_key_exists( $prop, $this->container ) ) {
-            return $this->container[ $prop ];
-        }
+			$message = sprintf( '%s could not be activated The minimum PHP version required for this plugin is %1$s. You are running %2$s.', $this->plugin_name, $this->min_php, PHP_VERSION );
+			wp_die( $message );
+		}
 
-        return $this->{$prop};
-    }
-
-    /**
-     * Magic isset to bypass referencing plugin.
-     *
-     * @param $prop
-     *
-     * @return mixed
-     */
-    public function __isset( $prop ) {
-        return isset( $this->{$prop} ) || isset( $this->container[ $prop ] );
-    }
-
-    /**
-     * EverProjects Constructor.
-     */
-    public function setup() {
-        $this->check_environment();
-        $this->define_constants();
-        $this->includes();
-        $this->init_hooks();
-        $this->plugin_init();
-        do_action( 'wc_variation_swatches_loaded' );
-    }
-
-    /**
-     * Ensure theme and server variable compatibility
-     */
-    public function check_environment() {
-        if ( version_compare( PHP_VERSION, $this->min_php, '<=' ) ) {
-            deactivate_plugins( plugin_basename( __FILE__ ) );
-
-            wp_die( "Unsupported PHP version Min required PHP Version:{$this->min_php}" );
-        }
-    }
-
-    /**
-     * Define EverProjects Constants.
-     *
-     * @since 1.0.0
-     * @return void
-     */
-    private function define_constants() {
-        //$upload_dir = wp_upload_dir( null, false );
-        define( 'WPWVS_VERSION', $this->version );
-        define( 'WPWVS_FILE', __FILE__ );
-        define( 'WPWVS_PATH', dirname( WPWVS_FILE ) );
-        define( 'WPWVS_INCLUDES', WPWVS_PATH . '/includes' );
-        define( 'WPWVS_ADMIN', WPWVS_PATH . '/includes/admin' );
-        define( 'WPWVS_URL', plugins_url( '', WPWVS_FILE ) );
-        define( 'WPWVS_ASSETS_URL', WPWVS_URL . '/assets' );
-        define( 'WPWVS_TEMPLATES_DIR', WPWVS_PATH . '/templates' );
-    }
+	}
 
 
-    /**
-     * What type of request is this?
-     *
-     * @param  string $type admin, ajax, cron or frontend.
-     *
-     * @return bool
-     */
-    private function is_request( $type ) {
-        switch ( $type ) {
-            case 'admin':
-                return is_admin();
-            case 'ajax':
-                return defined( 'DOING_AJAX' );
-            case 'cron':
-                return defined( 'DOING_CRON' );
-            case 'frontend':
-                return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && ! defined( 'REST_REQUEST' );
-        }
-    }
+	/**
+	 * Determines if the plugin compatible.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool
+	 */
+	protected function is_plugin_compatible() {
+		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+			$this->add_notice( 'error', sprintf(
+				'<strong>%s</strong> requires <strong>WooCommerce</strong> installed and active.',
+				$this->plugin_name
+			) );
+
+			return false;
+		}
+
+		if ( ! is_plugin_active( 'wc-variation-swatches/wc-variation-swatches.php' ) ) {
+			$this->add_notice( 'error', sprintf(
+				'<strong>%s</strong> requires <strong><a href="%s">WooCommerce Serial Numbers</a></strong> installed and active.',
+				$this->plugin_name, 'https://wordpress.org/plugins/wc-variation-swatches/'
+			) );
+
+			return false;
+		}
+
+		return true;
+	}
 
 
-    /**
-     * Include required core files used in admin and on the frontend.
-     */
-    public function includes() {
-        //core includes
+	/**
+	 * Adds an admin notice to be displayed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $class the notice class
+	 * @param string $message the notice message body
+	 */
+	public function add_notice( $class, $message ) {
+
+		$notices = $this->notices;
+		if ( is_string( $message ) && is_string( $class ) && ! wp_list_filter( $notices, array( 'message' => $message ) ) ) {
+
+			$this->notices[] = array(
+				'message' => $message,
+				'class'   => $class
+			);
+		}
+
+	}
+
+
+	/**
+	 * Displays any admin notices added
+	 *
+	 * @internal
+	 *
+	 * @since 1.0.0
+	 */
+	public function admin_notices() {
+		$notices = $this->notices;
+		foreach ( $notices as $notice_key => $notice ) :
+			?>
+			<div class="notice notice-<?php echo sanitize_html_class( $notice['class'] ); ?>">
+				<p><?php echo wp_kses( $notice['message'], array(
+						'a'      => array( 'href' => array() ),
+						'strong' => array()
+					) ); ?></p>
+			</div>
+		<?php
+		endforeach;
+	}
+
+
+	/**
+	 * Initialize plugin for localization
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function localization_setup() {
+		load_plugin_textdomain( 'wc-variation-swatches', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	}
+
+
+	/**
+	 * Plugin action links
+	 *
+	 * @param  array $links
+	 *
+	 * @return array
+	 */
+	public function plugin_action_links( $links ) {
+		$links[] = '<a href="' . admin_url( 'admin.php?page=wc-variation-swatches-settings' ) . '">' . __( 'Settings', 'wc-variation-swatches' ) . '</a>';
+
+		return $links;
+	}
+
+
+	/**
+	 * Main WCVariationSwatches Instance.
+	 *
+	 * Ensures only one instance of WCVariationSwatches is loaded or can be loaded.
+	 *
+	 * @since 1.0.0
+	 * @static
+	 * @return WCVariationSwatches - Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+
+	/**
+	 * Define EverProjects Constants.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	private function define_constants() {
+		//$upload_dir = wp_upload_dir( null, false );
+		define( 'WPWVS_VERSION', $this->version );
+		define( 'WPWVS_FILE', __FILE__ );
+		define( 'WPWVS_PATH', dirname( WPWVS_FILE ) );
+		define( 'WPWVS_INCLUDES', WPWVS_PATH . '/includes' );
+		define( 'WPWVS_ADMIN', WPWVS_PATH . '/includes/admin' );
+		define( 'WPWVS_URL', plugins_url( '', WPWVS_FILE ) );
+		define( 'WPWVS_ASSETS_URL', WPWVS_URL . '/assets' );
+		define( 'WPWVS_TEMPLATES_DIR', WPWVS_PATH . '/templates' );
+	}
+
+
+	/**
+	 * Include required core files used in admin and on the frontend.
+	 */
+	public function includes() {
+		//core includes
 		include_once WPWVS_INCLUDES . '/core-functions.php';
 		include_once WPWVS_INCLUDES . '/class-install.php';
-		
+		include_once WPWVS_INCLUDES . '/admin/class-admin.php';
+		include_once WPWVS_INCLUDES . '/class-frontend.php';
+	}
 
-		//admin includes
-		if ( $this->is_request( 'admin' ) ) {
-			include_once WPWVS_INCLUDES . '/admin/class-admin.php';
-		}
-
-		//frontend includes
-		if ( $this->is_request( 'frontend' ) ) {
-			include_once WPWVS_INCLUDES . '/class-frontend.php';
-		}
-
-    }
-
-    /**
-     * Hook into actions and filters.
-     *
-     * @since 2.3
-     */
-    private function init_hooks() {
-        // Localize our plugin
-        add_action( 'init', array( $this, 'localization_setup' ) );
-
-        add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
-    }
-
-    /**
-     * Initialize plugin for localization
-     *
-     * @since 1.0.0
-     *
-     * @return void
-     */
-    public function localization_setup() {
-        load_plugin_textdomain( 'wc-variation-swatches', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-    }
-
-    /**
-     * Plugin action links
-     *
-     * @param  array $links
-     *
-     * @return array
-     */
-    public function plugin_action_links( $links ) {
-        $links[] = '<a href="' . admin_url( 'admin.php?page=wc-variation-swatches' ) . '">' . __( 'Settings', 'wc-variation-swatches' ) . '</a>';
-        return $links;
-    }
-
-    public function plugin_init() {
-       
-    }
-
-    /**
-     * Get the plugin url.
-     *
-     * @return string
-     */
-    public function plugin_url() {
-        return untrailingslashit( plugins_url( '/', WPWVS_FILE ) );
-    }
-
-    /**
-     * Get the plugin path.
-     *
-     * @return string
-     */
-    public function plugin_path() {
-        return untrailingslashit( plugin_dir_path( WPWVS_FILE ) );
-    }
-
-    /**
-     * Get the template path.
-     *
-     * @return string
-     */
-    public function template_path() {
-        return WPWVS_TEMPLATES_DIR;
-    }
 
 }
 
-function wc_variation_swatches(){
-    return WCVariationSwatches::instance();
+function wc_variation_swatches() {
+	return WCVariationSwatches::instance();
 }
 
 //fire off the plugin

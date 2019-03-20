@@ -15,17 +15,13 @@
 	var app = {
 
 		initialize: function () {
-
 			$('#term-color').wpColorPicker();
 			$(document).on('click', '.wc-variation-swatches-upload-image', app.handle_term_image_upload);
 			$(document).on('click', '.wc-variation-swatches-remove-image', app.remove_term_image);
-			$(document).on('submit', '#addtag', app.clear_term_add_form);
-
+			//$(document).on('submit', '#addtag', app.clear_term_add_form);
 			app.settings_display();
 			$(document).on('click', '.enable_stylesheet_check input[type=checkbox]', app.settings_display);
-
-			$(document).on('click', '.round-box.wcvs-border-style, .square-box.wcvs-border-style', app.border_style);
-
+			//$(document).on('click', '.round-box.wcvs-border-style, .square-box.wcvs-border-style', app.border_style);
 		},
 
 		settings_display: function(){
@@ -86,6 +82,8 @@
 			$button.hide();
 
 		}
+
+
 
 	};
 
