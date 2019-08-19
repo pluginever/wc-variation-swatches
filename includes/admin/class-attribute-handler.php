@@ -51,52 +51,71 @@ class Attribute_Handler
 		$attribute_tax = wc_variation_swatches_get_attr_tax_by_name($taxonomy);
 		$swatches_types = wc_variation_swatches_types();
 		?>
-		<div class="form-field term-slug-wrap">
-			<label for="tag-slug">Level</label>
-			<?php echo wc_variation_swatches_get_field($attribute_tax->attribute_type, null); ?>
-		</div>
-		<script>
-
-			jQuery(document).ajaxComplete(function (event, request, options) {
-				if (request && 4 === request.readyState && 200 === request.status
-					&& options.data && 0 <= options.data.indexOf('action=add-tag')) {
-
-					var res = wpAjax.parseAjaxResponse(request.responseXML, 'ajax-response');
-					if (!res || res.errors) {
-						return;
-					}
-					// Clear Thumbnail fields on submit
-					jQuery('.wc-variation-swatches-preview').find('img').attr('src', '<?php echo esc_js(wc_placeholder_img_src()); ?>');
-					jQuery('.wc-variation-swatches-term-image').val('');
-					jQuery('.wc-variation-swatches-remove-image').hide();
-					return;
-				}
-			});
-		</script>
+		<div class="form-field term-wrap">
+		<label for="term_value"><?php echo ucfirst($attribute_tax->attribute_type); ?></label>
 		<?php
+		switch ($attribute_tax->attribute_type) {
+			case 'image':
+				?>
+				<input type="text" name="term_value" id="term_value" value="<?php //if ($term_image) echo $term_image?>" data-type="<?php echo $attribute_tax->attribute_type ?>"/>
+					<input type="button" name="" id="term-value_button" class="button term-value_button" value="Upload">
+				<?php
+				break;
+			case 'color':
+				?>
+				<input type="text" name="term_value" id="term_value" size="40" value="<?php //if ($term_image) echo $term_image ?>" data-type="<?php echo $attribute_tax->attribute_type ?>"/>
+				<?php
+				break;
+			case 'label':
+				?>
+				<input type="text" name="term_value" id="term_value" value="<?php //if ($term_image) echo $term_image?>" data-type="<?php echo $attribute_tax->attribute_type ?>"/>
+				<?php
+				break;
+		}
+		echo '</div>';
 	}
 
-	public function edit_attribute_fields($term, $taxonomy, $value = '')
+	public function edit_attribute_fields($term, $taxonomy)
 	{
 //		var_dump( $term );
 //		var_dump( $taxonomy );
-		?>
-
-		<tr class="form-field term-image-wrap">
-			<th scope="row"><label for="term-value">Image</label></th>
-			<td><input type="text" name="term-value" id="term_value" value="<?php if ($value) echo $value ?>"
-					   data-type="<?php //echo $type ?>"/>
-				<input type="button" name="" id="term-value_button" class="button term-value_button" value="Upload">
-			</td>
-		</tr>
+		$term_id = $term->term_id;
+		$term_image = get_term_meta($term->term_id, 'meta_value', true);
+		$attribute_tax = wc_variation_swatches_get_attr_tax_by_name($taxonomy);
+		$value = get_term_meta($term_id, $attribute_tax->attribute_type, true);
 
 
-		<?php
+		echo '<tr class="form-field term-description-wrap">';
+						printf('<th scope="row"><label for="term_value">'.ucfirst($attribute_tax->attribute_type).'</label></th>');
+
+		switch ($attribute_tax->attribute_type) {
+			case 'color':
+				printf('<td><input name="term_value" id="term_value" type="text" value="%s" ></td>', esc_attr($term_image));
+				break;
+
+			case 'image':
+				$value = get_term_meta($term_id, $attribute_tax->attribute_type, true);
+				$image = $value ? wp_get_attachment_image_src($value) : '';
+				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
+				printf('<td><input type="text" name="term_value" id="term_value" value="%s" data-type="'.$attribute_tax->attribute_type.'"/> <input type="button" name="" id="term-value_button" class="button term-value_button" value="Upload"> </td>', esc_url($term_image));
+
+				break;
+
+			case 'label':
+					printf('<td><input name="term_value" id="term_value" type="text" value="%s" ></td>', esc_attr($term_image));
+				break;
+		}
+		echo '</tr>';
 
 	}
 
 	public function save_term_meta($term_id, $term_taxonomy_id)
 	{
+		if (!isset($_POST['term_value'])) {
+			return;
+		}
+		update_term_meta($term_id, 'meta_value', $_POST['term_value']);
+
 		$swatches_types = wc_variation_swatches_types();
 		foreach ($swatches_types as $swatches_type => $label) {
 			if (isset($_POST[$swatches_type])) {
@@ -138,19 +157,26 @@ class Attribute_Handler
 		$attribute_tax = wc_variation_swatches_get_attr_tax_by_name($taxonomy);
 		$value = get_term_meta($term_id, $attribute_tax->attribute_type, true);
 
+		$term_image = get_term_meta($term_id, 'meta_value', true);
+
 		switch ($attribute_tax->attribute_type) {
+
 			case 'color':
-				printf('<div class="wc-variation-swatches-preview swatches-type-color" style="background-color:%s;"></div>', esc_attr($value));
+				printf('<div class="wc-variation-swatches-preview swatches-type-color" style="background-color:%s;"></div>', esc_attr($term_image));
 				break;
 
 			case 'image':
-				$image = $value ? wp_get_attachment_image_src($value) : '';
-				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
-				printf('<img class="wc-variation-swatches-preview swatches-type-image" src="%s" width="44px" height="44px">', esc_url($image));
+
+
+		$term_image = get_term_meta($term_id, 'meta_value', true);
+
+				printf('<img id="term_value" class="wc-variation-swatches-preview swatches-type-image" src="%s" width="44px" height="44px">', esc_url($term_image) );
+
 				break;
 
 			case 'label':
-				printf('<div class="wc-variation-swatches-preview swatches-type-label">%s</div>', esc_html($value));
+				$term_image = get_term_meta($term_id, 'meta_value', true);
+				printf('<div class="wc-variation-swatches-preview swatches-type-label">%s</div>', esc_html($term_image));
 				break;
 		}
 
@@ -180,13 +206,9 @@ class Attribute_Handler
 			}
 			?>
 		</select>
-		<button
-			class="button plus select_all_attributes"><?php esc_html_e('Select all', 'wc-variation-swatches'); ?></button>
-		<button
-			class="button minus select_no_attributes"><?php esc_html_e('Select none', 'wc-variation-swatches'); ?></button>
-		<button
-			class="button fr plus add_new_attribute"><?php esc_html_e('Add new', 'wc-variation-swatches'); ?></button>
-
+		<button class="button plus select_all_attributes"><?php esc_html_e('Select all', 'wc-variation-swatches'); ?></button>
+		<button class="button minus select_no_attributes"><?php esc_html_e('Select none', 'wc-variation-swatches'); ?></button>
+		<button class="button fr plus add_new_attribute"><?php esc_html_e('Add new', 'wc-variation-swatches'); ?></button>
 		<?php
 
 	}
