@@ -1,43 +1,35 @@
 <?php
 
-namespace Pluginever\WCVariationSwatches;
+defined( 'ABSPATH' ) || exit;
 
-class Install {
-    /**
-     * Install constructor.
-     */
-    private function __construct() {
-        add_action( 'init', array( __CLASS__, 'install' ) );
-    }
+class WPWVS_Install {
 
-    public static function install() {
+	public static function activate() {
+		if ( ! is_blog_installed() ) {
+			return;
+		}
 
-        if ( get_option( 'wc_variation_swatches_install_date' ) ) {
-            return;
-        }
+		if ( get_option( 'wc_variation_swatches_install_date' ) ) {
+			return;
+		}
 
-        if ( ! is_blog_installed() ) {
-            return;
-        }
+		// Check if we are not already running this routine.
+		if ( 'yes' === get_transient( 'wc_variation_swatches_installing' ) ) {
+			return;
+		}
 
-        // Check if we are not already running this routine.
-        if ( 'yes' === get_transient( 'wc_variation_swatchess_installing' ) ) {
-            return;
-        }
+		self::create_options();
+	}
 
-        self::create_options();
+	/**
+	 * Save option data
+	 */
+	private static function create_options() {
+		//save db version
+		update_option( 'wpwvs_version', WPWVS_VERSION );
 
-    }
-
-    /**
-     * Save option data
-     */
-    private static function create_options() {
-        //save db version
-        update_option( 'wpcp_version', WPWVS_VERSION );
-
-        //save install date
-        update_option( 'wc_variation_swatchess_install_date', current_time( 'timestamp' ) );
-    }
+		//save install date
+		update_option( 'wc_variation_swatches_install_date', current_time( 'timestamp' ) );
+	}
 
 }

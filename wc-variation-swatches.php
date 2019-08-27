@@ -41,13 +41,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 /**
- * Main WCVariationSwatches Class.
+ * Main WC_Variation_Swatches Class.
  *
- * @class WCVariationSwatches
+ * @class WC_Variation_Swatches
  */
-final class WCVariationSwatches {
+final class WC_Variation_Swatches {
 	/**
-	 * WCVariationSwatches version.
+	 * WC_Variation_Swatches version.
 	 *
 	 * @var string
 	 */
@@ -59,6 +59,23 @@ final class WCVariationSwatches {
 	 * @var string
 	 */
 	private $min_php = '5.6.0';
+
+
+	/**
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	protected $min_wp = '4.0.0';
+
+	/**
+	 * Minimum woocommerce version
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string
+	 */
+	protected $min_wc = '3.0.0';
 
 	/**
 	 * admin notices
@@ -72,7 +89,7 @@ final class WCVariationSwatches {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @var WCVariationSwatches
+	 * @var WC_Variation_Swatches
 	 * @since 1.0.0
 	 */
 	protected static $instance = null;
@@ -85,17 +102,156 @@ final class WCVariationSwatches {
 	public $plugin_name = 'WC Variation Swatches';
 
 	/**
-	 * WCVariationSwatches constructor.
+	 * WC_Variation_Swatches constructor.
 	 */
 	public function __construct() {
 		register_activation_hook( __FILE__, array( $this, 'activation_check' ) );
+
+		add_action( 'admin_init', array( $this, 'check_environment' ) );
+		add_action( 'admin_init', array( $this, 'add_plugin_notices' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ), 15 );
+
 		add_action( 'init', array( $this, 'localization_setup' ) );
+
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
-		if ( $this->is_plugin_compatible() ) {
-			$this->define_constants();
-			$this->includes();
+
+		// if the environment check fails, initialize the plugin
+		if ( $this->is_environment_compatible() ) {
+			include_once dirname( __FILE__ ) . '/includes/class-install.php';
+			register_activation_hook( __FILE__, array( 'WPWVS_Install', 'activate' ) );
+			add_action( 'plugins_loaded', array( $this, 'init_plugin' ) );
 		}
+	}
+
+	/**
+	 * Checks the environment on loading WordPress, just in case the environment changes after activation.
+	 *
+	 * @internal
+	 *
+	 * @since 1.0.0
+	 */
+	public function check_environment() {
+
+		if ( ! $this->is_environment_compatible() && is_plugin_active( plugin_basename( __FILE__ ) ) ) {
+
+			$this->deactivate_plugin();
+
+			$this->add_admin_notice( 'bad_environment', 'error', $this->plugin_name . ' has been deactivated. ' . $this->get_environment_message() );
+		}
+	}
+
+	/**
+	 * Adds notices for out-of-date WordPress and/or WP Content Pilot versions.
+	 *
+	 * @internal
+	 *
+	 * @since 1.0.0
+	 */
+	public function add_plugin_notices() {
+
+		if ( ! $this->is_wp_compatible() ) {
+
+			$this->add_admin_notice( 'update_wordpress', 'error', sprintf(
+				'%s requires WordPress version %s or higher. Please %supdate WordPress &raquo;%s',
+				'<strong>' . $this->plugin_name . '</strong>',
+				$this->min_wp,
+				'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">', '</a>'
+			) );
+		}
+
+		if ( ! $this->is_wc_compatible() ) {
+			$this->add_admin_notice( 'update_wc', 'error', sprintf(
+				'%s requires WooCommerce version %s or higher installed and active.',
+				$this->plugin_name,
+				$this->min_wc
+			) );
+		}
+	}
+
+	/**
+	 * Determines if the server environment is compatible with this plugin.
+	 *
+	 * Override this method to add checks for more than just the PHP version.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool
+	 */
+	protected function is_environment_compatible() {
+
+		return version_compare( PHP_VERSION, $this->min_php, '>=' );
+	}
+
+	/**
+	 * Determines if the WordPress compatible.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool
+	 */
+	protected function is_wp_compatible() {
+
+		return version_compare( get_bloginfo( 'version' ), $this->min_wp, '>=' );
+	}
+
+	/**
+	 * Determines if the WooCommerce installed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool
+	 */
+	protected function is_wc_installed() {
+		return is_plugin_active( 'woocommerce/woocommerce.php' );
+	}
+
+	/**
+	 * Determines if the WordPress compatible.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool
+	 */
+	protected function is_wc_compatible() {
+		return defined( 'WC_VERSION' ) && version_compare( WC_VERSION, $this->min_wc, '>=' );
+	}
+
+	/**
+	 * Determines if the required plugins are compatible.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool
+	 */
+	protected function plugins_compatible() {
+		return $this->is_wp_compatible() && $this->is_wc_compatible();
+	}
+
+	/**
+	 * Deactivates the plugin.
+	 *
+	 * @since 1.0.0
+	 */
+	protected function deactivate_plugin() {
+
+		deactivate_plugins( plugin_basename( __FILE__ ) );
+
+		if ( isset( $_GET['activate'] ) ) {
+			unset( $_GET['activate'] );
+		}
+	}
+
+
+	/**
+	 * Returns the message for display when the environment is incompatible with this plugin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	protected function get_environment_message() {
+
+		return sprintf( 'The minimum PHP version required for this plugin is %1$s. You are running %2$s.', $this->min_php, PHP_VERSION );
 	}
 
 	/**
@@ -107,45 +263,24 @@ final class WCVariationSwatches {
 	 */
 	public function activation_check() {
 
-		if ( ! version_compare( PHP_VERSION, $this->min_php, '>=' ) ) {
+		if ( ! $this->is_environment_compatible() ) {
 
-			deactivate_plugins( plugin_basename( __FILE__ ) );
+			$this->deactivate_plugin();
 
-			$message = sprintf( '%s could not be activated The minimum PHP version required for this plugin is %1$s. You are running %2$s.', $this->plugin_name, $this->min_php, PHP_VERSION );
-			wp_die( $message );
+			wp_die( $this->plugin_name . ' could not be activated. ' . $this->get_environment_message() );
 		}
 
 	}
 
-
 	/**
-	 * Determines if the plugin compatible.
+	 * Determines if the pro version installed.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return bool
 	 */
-	protected function is_plugin_compatible() {
-		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-		if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
-			$this->add_notice( 'error', sprintf(
-				'<strong>%s</strong> requires <strong>WooCommerce</strong> installed and active.',
-				$this->plugin_name
-			) );
-
-			return false;
-		}
-
-		if ( ! is_plugin_active( 'wc-variation-swatches/wc-variation-swatches.php' ) ) {
-			$this->add_notice( 'error', sprintf(
-				'<strong>%s</strong> requires <strong><a href="%s">WooCommerce Serial Numbers</a></strong> installed and active.',
-				$this->plugin_name, 'https://wordpress.org/plugins/wc-variation-swatches/'
-			) );
-
-			return false;
-		}
-
-		return true;
+	public function is_pro_installed() {
+		return is_plugin_active( 'wc-variation-swatches-pro/wc-variation-swatches-pro.php' );
 	}
 
 
@@ -170,70 +305,77 @@ final class WCVariationSwatches {
 
 	}
 
+	/**
+	 * Adds an admin notice to be displayed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $slug the notice slug
+	 * @param string $class the notice class
+	 * @param string $message the notice message body
+	 */
+	public function add_admin_notice( $slug, $class, $message ) {
+
+		$this->notices[ $slug ] = array(
+			'class'   => $class,
+			'message' => $message
+		);
+	}
 
 	/**
 	 * Displays any admin notices added
 	 *
 	 * @internal
 	 *
-	 * @since 1.0.0
+	 * @since 2.8.0
 	 */
 	public function admin_notices() {
-		$notices = $this->notices;
+		$notices = (array) array_merge( $this->notices, get_option( 'wc_variation_swatches_admin_notifications', [] ) );
 		foreach ( $notices as $notice_key => $notice ) :
+
 			?>
-			<div class="notice notice-<?php echo sanitize_html_class( $notice['class'] ); ?>">
-				<p><?php echo wp_kses( $notice['message'], array(
-						'a'      => array( 'href' => array() ),
-						'strong' => array()
-					) ); ?></p>
+			<div class="notice <?php echo sanitize_html_class( $notice['class'] ); ?>">
+				<p><?php echo wp_kses( $notice['message'], array( 'a' => array( 'href' => array() ) ) ); ?></p>
 			</div>
-		<?php
+			<?php
+			update_option( 'wc_variation_swatches_admin_notifications', [] );
 		endforeach;
 	}
 
-
 	/**
-	 * Initialize plugin for localization
+	 * Initializes the plugin.
+	 *
+	 * @internal
 	 *
 	 * @since 1.0.0
-	 *
-	 * @return void
 	 */
-	public function localization_setup() {
-		load_plugin_textdomain( 'wc-variation-swatches', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-	}
-
-
-	/**
-	 * Plugin action links
-	 *
-	 * @param  array $links
-	 *
-	 * @return array
-	 */
-	public function plugin_action_links( $links ) {
-		$links[] = '<a href="' . admin_url( 'admin.php?page=wc-variation-swatches-settings' ) . '">' . __( 'Settings', 'wc-variation-swatches' ) . '</a>';
-
-		return $links;
-	}
-
-
-	/**
-	 * Main WCVariationSwatches Instance.
-	 *
-	 * Ensures only one instance of WCVariationSwatches is loaded or can be loaded.
-	 *
-	 * @since 1.0.0
-	 * @static
-	 * @return WCVariationSwatches - Main instance.
-	 */
-	public static function instance() {
-		if ( is_null( self::$instance ) ) {
-			self::$instance = new self();
+	public function init_plugin() {
+		if ( $this->plugins_compatible() ) {
+			$this->define_constants();
+			$this->includes();
+			do_action( 'wc_variation_swatches_loaded' );
 		}
+	}
 
-		return self::$instance;
+	/**
+	 * What type of request is this?
+	 *
+	 * @param  string $type admin, ajax, cron or frontend.
+	 *
+	 * @return bool
+	 */
+	private function is_request( $type ) {
+
+		switch ( $type ) {
+			case 'admin':
+				return is_admin();
+			case 'ajax':
+				return defined( 'DOING_AJAX' );
+			case 'cron':
+				return defined( 'DOING_CRON' );
+			case 'frontend':
+				return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && ! defined( 'REST_REQUEST' );
+		}
 	}
 
 
@@ -261,17 +403,67 @@ final class WCVariationSwatches {
 	 */
 	public function includes() {
 		//core includes
-		include_once WPWVS_INCLUDES . '/core-functions.php';
 		include_once WPWVS_INCLUDES . '/class-install.php';
-		include_once WPWVS_INCLUDES . '/admin/class-admin.php';
-		include_once WPWVS_INCLUDES . '/class-frontend.php';
+		include_once WPWVS_INCLUDES . '/core-functions.php';
+
+		//admin includes
+		if ( $this->is_request( 'admin' ) ) {
+			include_once WPWVS_INCLUDES . '/admin/class-admin.php';
+		}
+
+		//frontend includes
+		if ( $this->is_request( 'frontend' ) ) {
+			include_once WPWVS_INCLUDES . '/class-frontend.php';
+		}
+	}
+
+	/**
+	 * Initialize plugin for localization
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return void
+	 */
+	public function localization_setup() {
+		load_plugin_textdomain( 'wc-variation-swatches', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	}
+
+
+	/**
+	 * Plugin action links
+	 *
+	 * @param  array $links
+	 *
+	 * @return array
+	 */
+	public function plugin_action_links( $links ) {
+		$links[] = '<a href="' . admin_url( 'admin.php?page=wc-variation-swatches-settings' ) . '">' . __( 'Settings', 'wc-variation-swatches' ) . '</a>';
+
+		return $links;
+	}
+
+	/**
+	 * Main WC_Variation_Swatches Instance.
+	 *
+	 * Ensures only one instance of WC_Variation_Swatches is loaded or can be loaded.
+	 *
+	 * @since 1.0.0
+	 * @static
+	 * @return WC_Variation_Swatches - Main instance.
+	 */
+	public static function instance() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
 	}
 
 
 }
 
 function wc_variation_swatches() {
-	return WCVariationSwatches::instance();
+	return WC_Variation_Swatches::instance();
 }
 
 //fire off the plugin

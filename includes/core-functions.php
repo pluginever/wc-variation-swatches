@@ -1,4 +1,5 @@
 <?php
+
 //function prefix wc_variation_swatches
 
 /**
@@ -24,7 +25,8 @@ function wc_variation_swatches_types() {
  * Get attribute name
  *
  * @param $taxonomy
- * @return array|null|object|string|string[]|void
+ *
+ * @return object attribute_taxonomy
  */
 
 function wc_variation_swatches_get_tax_attribute( $taxonomy ) {
@@ -32,9 +34,9 @@ function wc_variation_swatches_get_tax_attribute( $taxonomy ) {
 	global $wpdb;
 
 	$attribute_name = preg_replace( '/^pa_/i', '', $taxonomy );
-	$attribute_name = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = '$attribute_name'" );
+	$attribute_taxonomy = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}woocommerce_attribute_taxonomies WHERE attribute_name = '{$attribute_name}'" );
 
-	return $attribute_name;
+	return $attribute_taxonomy;
 }
 
 /**
@@ -52,7 +54,7 @@ function wc_variation_swatches_get_attr_tax_by_name( $taxonomy_name ) {
 	global $wpdb;
 
 	$taxonomy_name      = preg_replace( '/^pa_/i', '', $taxonomy_name );
-	$attribute_taxonomy = $wpdb->get_row( "SELECT * FROM " . $wpdb->prefix . "woocommerce_attribute_taxonomies WHERE attribute_name = '$taxonomy_name'" );
+	$attribute_taxonomy = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}woocommerce_attribute_taxonomies WHERE attribute_name = '{$taxonomy_name}'" );
 
 	return $attribute_taxonomy;
 }
@@ -106,20 +108,20 @@ function wc_variation_swatches_field( $type, $value = null ) {
 
 function wc_variation_swatches_field_label( $type ) {
 
-	switch ($type) {
+	switch ( $type ) {
 		case 'color':
-			_e('Color', 'wc-variation-swatches');
+			_e( 'Color', 'wc-variation-swatches' );
 			break;
 
 		case 'image':
-			_e('Image', 'wc-variation-swatches');
+			_e( 'Image', 'wc-variation-swatches' );
 			break;
 
 		case 'label':
-			_e('Label', 'wc-variation-swatches');
+			_e( 'Label', 'wc-variation-swatches' );
 			break;
 		default:
-			_e('Term', 'wc-variation-swatches');
+			_e( 'Term', 'wc-variation-swatches' );
 	}
 }
 
@@ -133,20 +135,22 @@ function wc_variation_swatches_field_label( $type ) {
  * @return string
  */
 
-function wc_variation_swatches_get_settings($key, $default = '', $section = '') {
+function wc_variation_swatches_get_settings( $key, $default = '', $section = '' ) {
 
-	$option = get_option($section, []);
+	$option = get_option( $section, [] );
 
-	return !empty($option[$key]) ? $option[$key] : $default;
+	return ! empty( $option[ $key ] ) ? $option[ $key ] : $default;
 }
 
-function wcbv_variation_is_active( $active, $variation ) {
-	if( ! $variation->is_in_stock() ) {
+function wc_variation_swatches_is_variation_active( $active, $variation ) {
+	if ( ! $variation->is_in_stock() ) {
 		return false;
 	}
+
 	return $active;
 }
-add_filter( 'woocommerce_variation_is_active', 'wcbv_variation_is_active', 10, 2 );
+
+add_filter( 'woocommerce_variation_is_active', 'wc_variation_swatches_is_variation_active', 10, 2 );
 
 
 

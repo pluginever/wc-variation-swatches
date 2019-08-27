@@ -12,6 +12,7 @@ class Attribute_Handler {
 
 	/**
 	 * Set all the hooks for adding fields to attribute screen
+	 *
 	 * Save new term meta
 	 *
 	 * @since 1.0.0

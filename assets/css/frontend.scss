@@ -12,7 +12,6 @@
 	padding: 5px;
 	z-index: 1;
 	cursor: pointer;
-	color: #fff;
 	opacity: 0.6;
 
 	&:hover .wcvs-color-tooltip {
@@ -23,7 +22,6 @@
 	.variation_check {
 		background-size: contain !important;
 	}
-
 }
 
 .round-box {
@@ -95,5 +93,10 @@
 			transform-origin: center;
 			z-index: 0;
 		}
+	}
+
+	&>.wcvs-swatch-label{
+		padding: 8px;
+		float: left;
 	}
 }
