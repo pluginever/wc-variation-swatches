@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') || exit;
+
 //function prefix wc_variation_swatches
 
 /**

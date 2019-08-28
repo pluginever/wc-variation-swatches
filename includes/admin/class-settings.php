@@ -1,15 +1,11 @@
 <?php
 
-namespace Pluginever\WCVariationSwatches\Admin;
-
-use Pluginever\WCVariationSwatches\Admin\WCVS_Settings_API;
-
-class Settings {
+class WC_Variation_Swatches_Settings {
 
 	private $settings_api;
 
 	function __construct() {
-		$this->settings_api = new WCVS_Settings_API();
+		$this->settings_api = new WC_Variation_Swatches_Settings_API();
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
@@ -67,6 +63,18 @@ class Settings {
 					'default' => 'on',
 				),
 
+				array(
+					'name'    => 'attribute_behaviour',
+					'label'   => __( 'Attribute Behaviour', 'wc-variation-swatches' ),
+					'desc'    => __( 'Disabled attribute will be hide / blur.', 'wc-variation-swatches' ),
+					'type'    => 'radio',
+					'options' => array(
+						'with_cross'    => 'Blur With Cross',
+						'without_cross' => 'Blur Without Cross',
+						'hide'          => 'Hide'
+					),
+				),
+
 
 			),
 
@@ -86,32 +94,20 @@ class Settings {
 
 				),
 
-				//				 array(
-				//				     'name'        => 'attribute_behaviour',
-				//				     'label'       => __( 'Attribute Behaviour', 'wc-variation-swatches' ),
-				//				     'desc'        => __( 'Disabled attribute will be hide / blur.', 'wc-variation-swatches' ),
-				//				     'type'        => 'radio',
-				//				     'options'     => array(
-				//				             'with_cross'    => 'Blur With Cross',
-				//				             'without_cross'        => 'Blur Without Cross',
-				//				             'hide'          => 'Hide'
-				//				          ),
-				//				 ),
-
 				array(
 					'name'    => 'width',
 					'label'   => __( 'Width', 'wc-variation-swatches' ),
 					'desc'    => __( 'Variation Item Width.', 'wc-variation-swatches' ),
-					'type'    => 'text',
-					'default' => '30px',
+					'type'    => 'number',
+					'default' => '30',
 				),
 
 				array(
 					'name'    => 'height',
 					'label'   => __( 'Height', 'wc-variation-swatches' ),
 					'desc'    => __( 'Variation Item Height.', 'wc-variation-swatches' ),
-					'type'    => 'text',
-					'default' => '30px',
+					'type'    => 'number',
+					'default' => '30',
 				),
 			),
 
@@ -128,23 +124,23 @@ class Settings {
 				array(
 					'name'    => 'font_size',
 					'label'   => __( 'Tooltip Font Size', 'wc-variation-swatches' ),
-					'desc'    => __( 'Tooltip Font Size.', 'wc-variation-swatches' ),
-					'type'    => 'text',
-					'default' => '15px',
+					'desc'    => __( 'Tooltip Font Size in PX.', 'wc-variation-swatches' ),
+					'type'    => 'number',
+					'default' => '15',
 				),
 
 				array(
 					'name'    => 'tooltip_bg_color',
 					'label'   => __( 'Tooltip Background Color', 'wc-variation-swatches' ),
 					'type'    => 'color',
-					'default' => '#555',
+					'default' => '#555555',
 				),
 
 				array(
 					'name'    => 'tooltip_text_color',
 					'label'   => __( 'Tooltip Text Color', 'wc-variation-swatches' ),
 					'type'    => 'color',
-					'default' => '#fff',
+					'default' => '#ffffff',
 				),
 			),
 
@@ -170,13 +166,6 @@ class Settings {
 					'default' => '#81d742',
 				),
 
-				array(
-					'name'    => 'border_width',
-					'label'   => __( 'Border Width', 'wc-variation-swatches' ),
-					'desc'    => __( 'Default border width in px.', 'wc-variation-swatches' ),
-					'type'    => 'number',
-					'default' => '1',
-				),
 			),
 
 		);
@@ -221,5 +210,4 @@ class Settings {
 }
 
 
-
-
+new WC_Variation_Swatches_Settings();

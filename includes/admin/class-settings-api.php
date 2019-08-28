@@ -1,9 +1,8 @@
 <?php
 
-namespace Pluginever\WCVariationSwatches\Admin;
+defined('ABSPATH') || exit;
 
-
-    class WCVS_Settings_API {
+class WC_Variation_Swatches_Settings_API {
         /**
          * settings sections array
          *

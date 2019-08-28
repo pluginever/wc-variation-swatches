@@ -1,5 +1,4 @@
-
-(function (window, document, $, undefined) {
+(function ($) {
 	'use strict';
 
 	var app = {
@@ -11,10 +10,9 @@
 			$(document).on('click', '.swatch', app.handle_swatches);
 			$(document).on('click', '.reset_variations', app.reset_variations);
 			$(document).on('ever_no_matching_variations', app.variation_nomatching);
-			//$(document).on('ready', app.variation_check);
-
-
+			$(document).on('ready', app.variation_check);
 		},
+
 
 		ever_variation_swatches_form: function () {
 			var variationForm = $('.variations_form');
@@ -30,10 +28,10 @@
 
 			e.preventDefault();
 
-			var fullData       = $(this),
-				selectData     = fullData.closest('.value').find('select'),
+			var fullData = $(this),
+				selectData = fullData.closest('.value').find('select'),
 				attribute_name = fullData.closest('.value').children('.wc-ever-swatches').attr('data-attribute_name'),
-				optionValue    = fullData.data('value');
+				optionValue = fullData.data('value');
 
 			selectData.trigger('focusin');
 
@@ -72,14 +70,14 @@
 			window.alert(wc_add_to_cart_variation_params.i18n_no_matching_variations_text);
 		},
 
-		variation_check: function(){
+		variation_check: function () {
 			$('.swatch').each(function () {
 
-				var fullData       = $(this),
-					selectData     = fullData.closest('.value').find('select'),
-					optionValue    = fullData.data('value');
+				var fullData = $(this),
+					selectData = fullData.closest('.value').find('select'),
+					optionValue = fullData.data('value');
 
-				if(!selectData.find('option[value=\'' + optionValue + '\']').length ){
+				if (!selectData.find('option[value=\'' + optionValue + '\']').length) {
 					fullData.children('.variation_check').addClass('disabled');
 				}
 
@@ -92,4 +90,4 @@
 
 	return app;
 
-})(window, document, jQuery);
+})(jQuery);

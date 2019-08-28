@@ -118,7 +118,7 @@ final class WC_Variation_Swatches {
 		// if the environment check fails, initialize the plugin
 		if ( $this->is_environment_compatible() ) {
 			include_once dirname( __FILE__ ) . '/includes/class-install.php';
-			register_activation_hook( __FILE__, array( 'WPWVS_Install', 'activate' ) );
+			register_activation_hook( __FILE__, array( 'WC_VARIATION_SWATCHES_Install', 'activate' ) );
 			add_action( 'plugins_loaded', array( $this, 'init_plugin' ) );
 		}
 	}
@@ -272,17 +272,6 @@ final class WC_Variation_Swatches {
 
 	}
 
-	/**
-	 * Determines if the pro version installed.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return bool
-	 */
-	public function is_pro_installed() {
-		return is_plugin_active( 'wc-variation-swatches-pro/wc-variation-swatches-pro.php' );
-	}
-
 
 	/**
 	 * Adds an admin notice to be displayed.
@@ -358,28 +347,6 @@ final class WC_Variation_Swatches {
 	}
 
 	/**
-	 * What type of request is this?
-	 *
-	 * @param  string $type admin, ajax, cron or frontend.
-	 *
-	 * @return bool
-	 */
-	private function is_request( $type ) {
-
-		switch ( $type ) {
-			case 'admin':
-				return is_admin();
-			case 'ajax':
-				return defined( 'DOING_AJAX' );
-			case 'cron':
-				return defined( 'DOING_CRON' );
-			case 'frontend':
-				return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' ) && ! defined( 'REST_REQUEST' );
-		}
-	}
-
-
-	/**
 	 * Define EverProjects Constants.
 	 *
 	 * @since 1.0.0
@@ -387,14 +354,14 @@ final class WC_Variation_Swatches {
 	 */
 	private function define_constants() {
 		//$upload_dir = wp_upload_dir( null, false );
-		define( 'WPWVS_VERSION', $this->version );
-		define( 'WPWVS_FILE', __FILE__ );
-		define( 'WPWVS_PATH', dirname( WPWVS_FILE ) );
-		define( 'WPWVS_INCLUDES', WPWVS_PATH . '/includes' );
-		define( 'WPWVS_ADMIN', WPWVS_PATH . '/includes/admin' );
-		define( 'WPWVS_URL', plugins_url( '', WPWVS_FILE ) );
-		define( 'WPWVS_ASSETS_URL', WPWVS_URL . '/assets' );
-		define( 'WPWVS_TEMPLATES_DIR', WPWVS_PATH . '/templates' );
+		define( 'WC_VARIATION_SWATCHES_VERSION', $this->version );
+		define( 'WC_VARIATION_SWATCHES_FILE', __FILE__ );
+		define( 'WC_VARIATION_SWATCHES_PATH', dirname( WC_VARIATION_SWATCHES_FILE ) );
+		define( 'WC_VARIATION_SWATCHES_INCLUDES', WC_VARIATION_SWATCHES_PATH . '/includes' );
+		define( 'WC_VARIATION_SWATCHES_ADMIN', WC_VARIATION_SWATCHES_PATH . '/includes/admin' );
+		define( 'WC_VARIATION_SWATCHES_URL', plugins_url( '', WC_VARIATION_SWATCHES_FILE ) );
+		define( 'WC_VARIATION_SWATCHES_ASSETS_URL', WC_VARIATION_SWATCHES_URL . '/assets' );
+		define( 'WC_VARIATION_SWATCHES_TEMPLATES_DIR', WC_VARIATION_SWATCHES_PATH . '/templates' );
 	}
 
 
@@ -403,17 +370,17 @@ final class WC_Variation_Swatches {
 	 */
 	public function includes() {
 		//core includes
-		include_once WPWVS_INCLUDES . '/class-install.php';
-		include_once WPWVS_INCLUDES . '/core-functions.php';
+		include_once WC_VARIATION_SWATCHES_INCLUDES . '/class-install.php';
+		include_once WC_VARIATION_SWATCHES_INCLUDES . '/core-functions.php';
+		include_once WC_VARIATION_SWATCHES_INCLUDES . '/script-functions.php';
+		include_once WC_VARIATION_SWATCHES_INCLUDES . '/hook-functions.php';
+		include_once WC_VARIATION_SWATCHES_INCLUDES . '/class-single-variation.php';
 
 		//admin includes
-		if ( $this->is_request( 'admin' ) ) {
-			include_once WPWVS_INCLUDES . '/admin/class-admin.php';
-		}
-
-		//frontend includes
-		if ( $this->is_request( 'frontend' ) ) {
-			include_once WPWVS_INCLUDES . '/class-frontend.php';
+		if ( is_admin() ) {
+			require_once WC_VARIATION_SWATCHES_INCLUDES . '/admin/class-settings-api.php';
+			require_once WC_VARIATION_SWATCHES_INCLUDES . '/admin/class-settings.php';
+			require_once WC_VARIATION_SWATCHES_INCLUDES . '/admin/class-attribute-handler.php';
 		}
 	}
 

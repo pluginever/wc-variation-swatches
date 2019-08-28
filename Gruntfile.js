@@ -20,10 +20,10 @@ module.exports = function (grunt) {
 			},
 			all: [
 				'Gruntfile.js',
-				'<%= dirs.js %>/admin/*.js',
-				'!<%= dirs.js %>/admin/*.min.js',
-				'<%= dirs.js %>/frontend/*.js',
-				'!<%= dirs.js %>/frontend/*.min.js'
+				'<%= dirs.js %>/*.js',
+				'!<%= dirs.js %>/*.min.js',
+				'<%= dirs.js %>/*.js',
+				'!<%= dirs.js %>/*.min.js'
 			]
 		},
 
@@ -48,32 +48,15 @@ module.exports = function (grunt) {
 					comments: /@license|@preserve|^!/
 				}
 			},
-			admin: {
+			js: {
 				files: [{
 					expand: true,
-					cwd: '<%= dirs.js %>/admin/',
+					cwd: '<%= dirs.js %>',
 					src: [
 						'*.js',
 						'!*.min.js'
 					],
-					dest: '<%= dirs.js %>/admin/',
-					ext: '.min.js'
-				}]
-			},
-			vendor: {
-				files: {
-					// '<%= dirs.js %>/file.min.js': ['<%= dirs.js %>/file.js'],
-				}
-			},
-			frontend: {
-				files: [{
-					expand: true,
-					cwd: '<%= dirs.js %>/frontend/',
-					src: [
-						'*.js',
-						'!*.min.js'
-					],
-					dest: '<%= dirs.js %>/frontend/',
+					dest: '<%= dirs.js %>',
 					ext: '.min.js'
 				}]
 			}
@@ -109,10 +92,7 @@ module.exports = function (grunt) {
 		// Concatenate files.
 		concat: {
 			admin: {
-				files: {
-					// '<%= dirs.css %>/admin.css' : ['<%= dirs.css %>/select2.css', '<%= dirs.css %>/admin.css'],
-					// '<%= dirs.css %>/admin-rtl.css' : ['<%= dirs.css %>/select2.css', '<%= dirs.css %>/admin-rtl.css']
-				}
+				files: {}
 			}
 		},
 
@@ -123,12 +103,7 @@ module.exports = function (grunt) {
 				tasks: ['sass', 'postcss', 'cssmin', 'concat']
 			},
 			js: {
-				files: [
-					'<%= dirs.js %>/admin/*js',
-					'<%= dirs.js %>/frontend/*js',
-					'!<%= dirs.js %>/admin/*.min.js',
-					'!<%= dirs.js %>/frontend/*.min.js'
-				],
+				files: ['<%= dirs.js %>/*.js'],
 				tasks: ['jshint', 'uglify']
 			}
 		},
