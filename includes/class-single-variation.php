@@ -42,7 +42,6 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 
 	public function attribute_options_html( $html, $args ) {
 
-
 		$types = wc_variation_swatches_types();
 		$attr  = wc_variation_swatches_get_tax_attribute( $args['attribute'] );
 
@@ -53,28 +52,21 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 		$options   = $args['options'];
 		$product   = $args['product'];
 		$attribute = $args['attribute'];
-		$class     = "variation-selector variation-select-{$attr->attribute_type}";
 		$swatches  = '';
 
 		if ( empty( $options ) && ! empty( $product ) && ! empty( $attribute ) ) {
-
 			$attributes = $product->get_variation_attributes();
 			$options    = $attributes[ $attribute ];
-
 		}
 
 		if ( array_key_exists( $attr->attribute_type, $types ) ) {
-
 			if ( ! empty( $options ) && $product && taxonomy_exists( $attribute ) ) {
-
-				$all_terms = wc_get_product_terms( $product->get_id(), $attribute, array( 'fields' => 'all' ) );
+				$all_terms = wc_get_product_terms( $product->get_id(), $attribute, array( 'fields' => 'all', 'orderby' => 'term_id' ) );
 
 				foreach ( $all_terms as $term ) {
-
 					if ( in_array( $term->slug, $options ) ) {
 						$swatches .= apply_filters( 'wc_variation_swatch_attribute_html', '', $term, $attr, $args );
 					}
-
 				}
 
 			}
@@ -146,7 +138,7 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 			case 'label':
 				$label = get_term_meta( $term->term_id, 'label', true );
 				$label = $label ? $label : $name;
-				$html  = sprintf( '<div class="wcvs-swatch-label %1$s" title="%2$s" data-value="%3$s">%4$s</div><div class="variation_check %5$s"></div>', $class, $name, $term->slug, $label, $attribute_behaviour );
+				$html  = sprintf( '<div class="wcvs-swatch-label %1$s" title="%2$s" data-value="%3$s"><div class="variation_check %4$s">%5$s</div></div>', $class, $name, $term->slug, $attribute_behaviour, $label );
 				break;
 		}
 
@@ -181,9 +173,14 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 				font-size: <?php echo $this->font_size . 'px'; ?>;
 			}
 
-			.wcvs-swatch-image > .variation_check, .wcvs-swatch-label > .variation_check, .wcvs-swatch-color > .variation_check {
+			.wcvs-swatch-image > .variation_check, .wcvs-swatch-color > .variation_check {
 				width: <?php echo $this->shape_width  . 'px';?>;
 				height: <?php echo $this->shape_height . 'px'; ?>;
+			}
+
+			.wcvs-swatch-label > .variation_check{
+				min-width: <?php echo intval($this->shape_width) - 3 . 'px';?>;
+				min-height: <?php echo intval($this->shape_height) - 3 . 'px';?>;
 			}
 
 			.round-box.wcvs-border-style, .square-box.wcvs-border-style {

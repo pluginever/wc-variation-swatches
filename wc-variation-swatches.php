@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WC Variation Swatches
  * Plugin URI:  https://www.pluginever.com
- * Description: The Best WordPress Plugin ever made!
+ * Description: Provides a much nicer way to display variations of variable products!
  * Version:     1.0.0
  * Author:      pluginever
  * Author URI:  https://www.pluginever.com
@@ -118,7 +118,7 @@ final class WC_Variation_Swatches {
 		// if the environment check fails, initialize the plugin
 		if ( $this->is_environment_compatible() ) {
 			include_once dirname( __FILE__ ) . '/includes/class-install.php';
-			register_activation_hook( __FILE__, array( 'WC_VARIATION_SWATCHES_Install', 'activate' ) );
+			register_activation_hook( __FILE__, array( 'WC_Variation_Swatches_Install', 'activate' ) );
 			add_action( 'plugins_loaded', array( $this, 'init_plugin' ) );
 		}
 	}

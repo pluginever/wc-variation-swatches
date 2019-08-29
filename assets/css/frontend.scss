@@ -1,6 +1,5 @@
 .hidden {
 	display: none !important;
-	visibility: hidden !important;
 }
 
 .round-box, .square-box {
@@ -25,9 +24,9 @@
 }
 
 .round-box {
-	border-radius: 50px;
+	border-radius: 50%;
 	.variation_check {
-		border-radius: 50px;
+		border-radius: 50%;
 	}
 }
 
@@ -61,6 +60,9 @@
 }
 
 .wc-ever-swatches {
+	.swatch-hide{
+		visibility: hidden !important;
+	}
 
 	.variation_check.disabled {
 		&.with_cross{
@@ -98,10 +100,6 @@
 
 		&.without_cross{
 			filter: blur(3px);
-		}
-
-		&.hide{
-			display: none;
 		}
 	}
 

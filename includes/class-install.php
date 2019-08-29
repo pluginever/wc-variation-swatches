@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-class WC_VARIATION_SWATCHES_Install {
+class WC_Variation_Swatches_Install {
 
 	public static function activate() {
 		if ( ! is_blog_installed() ) {
@@ -26,7 +26,7 @@ class WC_VARIATION_SWATCHES_Install {
 	 */
 	private static function create_options() {
 		//save db version
-		update_option( 'WC_VARIATION_SWATCHES_version', WC_VARIATION_SWATCHES_VERSION );
+		update_option( 'wc_variation_swatches_version', WC_VARIATION_SWATCHES_VERSION );
 
 		//save install date
 		update_option( 'wc_variation_swatches_install_date', current_time( 'timestamp' ) );

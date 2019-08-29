@@ -79,10 +79,14 @@
 
 				if (!selectData.find('option[value=\'' + optionValue + '\']').length) {
 					swatch.find('.variation_check').addClass('disabled');
-				}else{
-					swatch.find('.variation_check').removeClass('disabled');
-				}
 
+					if (swatch.find('.variation_check').hasClass('hide')) {
+						swatch.addClass('swatch-hide');
+					}
+
+				} else {
+					swatch.removeClass('swatch-hide').find('.variation_check').removeClass('disabled');
+				}
 			});
 		}
 
