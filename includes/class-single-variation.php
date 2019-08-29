@@ -81,9 +81,8 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 		}
 
 		if ( ! empty( $swatches ) ) {
-			$class    = "hidden";
 			$swatches = '<div class="wc-ever-swatches" data-attribute_name="attribute_' . esc_attr( $attribute ) . '">' . $swatches . '</div>';
-			$html     = '<div class="' . esc_attr( $class ) . '">' . $html . '</div>' . $swatches;
+			$html     = sprintf( '<div class="hidden wcvs-hidden-swatches">%1$s</div>%2$s', $html, $swatches );
 		}
 
 		return $html;
@@ -104,6 +103,8 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 		$selected = sanitize_title( $args['selected'] ) == $term->slug ? 'selected' : '';
 		$name     = esc_html( $term->name );
 
+		$attribute_behaviour = wc_variation_swatches_get_settings( 'attribute_behaviour', 'with_cross', 'general_settings' );
+
 		$shape_style        = wc_variation_swatches_get_settings( 'shape_style', 'round', 'shape_settings' );
 		$this->shape_width  = wc_variation_swatches_get_settings( 'width', '30', 'shape_settings' );
 		$this->shape_height = wc_variation_swatches_get_settings( 'height', '30', 'shape_settings' );
@@ -122,15 +123,15 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 		$tooltip_class = ( $enable_tooltip == 'off' ) ? 'hidden' : 'wcvs-color-tooltip';
 		$tooltip_html  = sprintf( '<span class="%1$s">%2$s</span>', $tooltip_class, $name );
 
-		$class = join( ' ', [ 'swatch', $class_shape, $border_style, 'swatch-' . $term->slug, $selected ] );
+		$class = join( ' ', [ 'wcvs-swatch', $class_shape, $border_style, 'swatch-' . $term->slug, $selected ] );
 
 		switch ( $attr->attribute_type ) {
 
 			case 'color':
 				$this->color = get_term_meta( $term->term_id, 'color', true );
 
-				$html = sprintf( '<div class="wcvs-swatch-color %1$s" title="%2$s" data-value="%3$s"><div class="variation_check"  style="background: %4$s;"></div>%5$s</div>',
-					$class, $name, $term->slug, $this->color, $tooltip_html );
+				$html = sprintf( '<div class="wcvs-swatch-color %1$s" title="%2$s" data-value="%3$s"><div class="variation_check %4$s"  style="background: %5$s;"></div>%6$s</div>',
+					$class, $name, $term->slug, $attribute_behaviour, $this->color, $tooltip_html );
 				break;
 
 			case 'image':
@@ -138,14 +139,14 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 				$image = $image ? wp_get_attachment_image_src( $image ) : '';
 				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
-				$html = sprintf( '<div class="wcvs-swatch-image %1$s %2$s" title="%3$s" data-value="%4$s"><div class="variation_check" style="background: url(%5$s);"></div>%6$S</div>',
-					$class, $class_shape_image, $name, $term->slug, $image, $tooltip_html );
+				$html = sprintf( '<div class="wcvs-swatch-image %1$s %2$s" title="%3$s" data-value="%4$s"><div class="variation_check %5$s" style="background: url(%6$s);"></div>%7$s</div>',
+					$class, $class_shape_image, $name, $term->slug, $attribute_behaviour, $image, $tooltip_html );
 				break;
 
 			case 'label':
 				$label = get_term_meta( $term->term_id, 'label', true );
 				$label = $label ? $label : $name;
-				$html  = sprintf( '<div class="wcvs-swatch-label %1$s" title="%2$s" data-value="%3$s">%4$s</div><div class="variation_check"></div>', $class, $name, $term->slug, $label );
+				$html  = sprintf( '<div class="wcvs-swatch-label %1$s" title="%2$s" data-value="%3$s">%4$s</div><div class="variation_check %5$s"></div>', $class, $name, $term->slug, $label, $attribute_behaviour );
 				break;
 		}
 

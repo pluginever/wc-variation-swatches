@@ -69,7 +69,7 @@ class WC_Variation_Swatches_Settings {
 					'desc'    => __( 'Disabled attribute will be hide / blur.', 'wc-variation-swatches' ),
 					'type'    => 'radio',
 					'options' => array(
-						'with_cross'    => 'Blur With Cross',
+						'with_cross'    => 'With Cross',
 						'without_cross' => 'Blur Without Cross',
 						'hide'          => 'Hide'
 					),

@@ -152,7 +152,7 @@ function wc_variation_swatches_is_variation_active( $active, $variation ) {
 	return $active;
 }
 
-add_filter( 'woocommerce_variation_is_active', 'wc_variation_swatches_is_variation_active', 10, 2 );
+//add_filter( 'woocommerce_variation_is_active', 'wc_variation_swatches_is_variation_active', 10, 2 );
 
 
 

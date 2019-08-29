@@ -6,11 +6,12 @@
 		initialize: function () {
 
 			app.ever_variation_swatches_form();
+			app.variation_check();
 
-			$(document).on('click', '.swatch', app.handle_swatches);
+			$(document).on('click', '.wcvs-swatch', app.handle_swatches);
 			$(document).on('click', '.reset_variations', app.reset_variations);
 			$(document).on('ever_no_matching_variations', app.variation_nomatching);
-			$(document).on('ready', app.variation_check);
+
 		},
 
 
@@ -28,20 +29,18 @@
 
 			e.preventDefault();
 
-			var fullData = $(this),
-				selectData = fullData.closest('.value').find('select'),
-				attribute_name = fullData.closest('.value').children('.wc-ever-swatches').attr('data-attribute_name'),
-				optionValue = fullData.data('value');
+			var swatch = $(this),
+				selectData = swatch.parent().prev().find('select'),
+				attribute_name = swatch.parent().attr('data-attribute_name'),
+				optionValue = swatch.attr('data-value');
 
 			selectData.trigger('focusin');
 
 			if (!selectData.find('option[value=\'' + optionValue + '\']').length) {
-
-				fullData.siblings('.swatch').removeClass('selected');
+				swatch.siblings().removeClass('selected');
 
 				selectData.val('').change();
-				variationForm.trigger('ever_no_matching_variations', [fullData]);
-
+				variationForm.trigger('ever_no_matching_variations', [swatch]);
 				return;
 			}
 
@@ -49,17 +48,18 @@
 				selected.push(attribute_name);
 			}
 
-			if (fullData.hasClass('selected')) {
+			if (swatch.hasClass('selected')) {
 				selectData.val('');
-				fullData.removeClass('selected');
+				swatch.removeClass('selected');
 
 				delete selected[selected.indexOf(attribute_name)];
 			} else {
-				fullData.addClass('selected').siblings('.selected').removeClass('selected');
+				swatch.addClass('selected').siblings().removeClass('selected');
 				selectData.val(optionValue);
 			}
 
 			selectData.change();
+			app.variation_check();
 		},
 
 		reset_variations: function () {
@@ -71,14 +71,16 @@
 		},
 
 		variation_check: function () {
-			$('.swatch').each(function () {
+			$('.wcvs-swatch').each(function () {
 
-				var fullData = $(this),
-					selectData = fullData.closest('.value').find('select'),
-					optionValue = fullData.data('value');
+				var swatch = $(this),
+					selectData = swatch.parent().prev().find('select'),
+					optionValue = swatch.attr('data-value');
 
 				if (!selectData.find('option[value=\'' + optionValue + '\']').length) {
-					fullData.children('.variation_check').addClass('disabled');
+					swatch.find('.variation_check').addClass('disabled');
+				}else{
+					swatch.find('.variation_check').removeClass('disabled');
 				}
 
 			});

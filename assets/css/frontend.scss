@@ -63,18 +63,17 @@
 .wc-ever-swatches {
 
 	.variation_check.disabled {
+		&.with_cross{
 
-		//&.with_cross{
 			&:before {
 				content: "";
 				transform: rotate(45deg);
 			}
+
 			&:after {
 				content: "";
 				transform: rotate(-45deg);
 			}
-
-
 
 			&:after, &:before {
 				position: absolute;
@@ -92,14 +91,17 @@
 				margin: 0 !important;
 				padding: 0 !important;
 				min-width: auto;
-				-webkit-transform-origin: center;
 				transform-origin: center;
 				z-index: 0;
 			}
-		//}
+		}
 
 		&.without_cross{
+			filter: blur(3px);
+		}
 
+		&.hide{
+			display: none;
 		}
 	}
 
