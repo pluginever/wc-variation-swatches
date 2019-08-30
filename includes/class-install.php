@@ -26,7 +26,7 @@ class WC_Variation_Swatches_Install {
 	 */
 	private static function create_options() {
 		//save db version
-		update_option( 'wc_variation_swatches_version', WC_VARIATION_SWATCHES_VERSION );
+		update_option( 'wc_variation_swatches_version', '1.0.0' );
 
 		//save install date
 		update_option( 'wc_variation_swatches_install_date', current_time( 'timestamp' ) );

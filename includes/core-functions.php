@@ -36,7 +36,7 @@ function wc_variation_swatches_get_tax_attribute( $taxonomy ) {
 	global $wpdb;
 
 	$attribute_name = preg_replace( '/^pa_/i', '', $taxonomy );
-	$attribute_taxonomy = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}woocommerce_attribute_taxonomies WHERE attribute_name = '{$attribute_name}'" );
+	$attribute_taxonomy = $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$wpdb->prefix}woocommerce_attribute_taxonomies WHERE attribute_name = %s", $attribute_name ));
 
 	return $attribute_taxonomy;
 }
@@ -56,7 +56,7 @@ function wc_variation_swatches_get_attr_tax_by_name( $taxonomy_name ) {
 	global $wpdb;
 
 	$taxonomy_name      = preg_replace( '/^pa_/i', '', $taxonomy_name );
-	$attribute_taxonomy = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}woocommerce_attribute_taxonomies WHERE attribute_name = '{$taxonomy_name}'" );
+	$attribute_taxonomy = $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$wpdb->prefix}woocommerce_attribute_taxonomies WHERE attribute_name = %s", $taxonomy_name) );
 
 	return $attribute_taxonomy;
 }
@@ -144,6 +144,13 @@ function wc_variation_swatches_get_settings( $key, $default = '', $section = '' 
 	return ! empty( $option[ $key ] ) ? $option[ $key ] : $default;
 }
 
+/**
+ * since 1.0.0
+ * @param $active
+ * @param $variation
+ *
+ * @return bool
+ */
 function wc_variation_swatches_is_variation_active( $active, $variation ) {
 	if ( ! $variation->is_in_stock() ) {
 		return false;

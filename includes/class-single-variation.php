@@ -14,6 +14,9 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 		add_action( 'init', array( $this, 'initialize_settings' ), 10, 1 );
 	}
 
+	/**
+	 * since 1.0.0
+	 */
 	public function initialize_settings() {
 
 		$stylesheet = wc_variation_swatches_get_settings( 'enable_stylesheet', 'on', 'general_settings' );
@@ -30,7 +33,7 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 	}
 
 	/**
-	 * Chnage the default list of variation attributes html.
+	 * Change the default list of variation attributes html.
 	 *
 	 * @since 1.0.0
 	 *
@@ -39,7 +42,6 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 	 *
 	 * @return string html
 	 */
-
 	public function attribute_options_html( $html, $args ) {
 
 		$types = wc_variation_swatches_types();
