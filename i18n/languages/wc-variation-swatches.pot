@@ -1,11 +1,11 @@
-# Copyright (C) 2019 pluginever
+# Copyright (C) 2019 manikmist09
 # This file is distributed under the GPLv2+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WC Variation Swatches 1.0.0\n"
+"Project-Id-Version: WooCommerce Variation Swatches 1.0.0\n"
 "Report-Msgid-Bugs-To: "
 "https://wordpress.org/support/plugin/wc-variation-swatches\n"
-"POT-Creation-Date: 2019-08-30 10:54:53+00:00\n"
+"POT-Creation-Date: 2019-09-01 13:00:13+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -159,7 +159,9 @@ msgstr ""
 msgid "Default border color."
 msgstr ""
 
-#. Plugin Name of the plugin/theme
+#: build/includes/admin/class-settings.php:186
+#: build/includes/admin/class-settings.php:187
+#: includes/admin/class-settings.php:186 includes/admin/class-settings.php:187
 msgid "WC Variation Swatches"
 msgstr ""
 
@@ -199,6 +201,10 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
+#. Plugin Name of the plugin/theme
+msgid "WooCommerce Variation Swatches"
+msgstr ""
+
 #. Plugin URI of the plugin/theme
 msgid "https://www.pluginever.com"
 msgstr ""
@@ -208,7 +214,7 @@ msgid "Provides a much nicer way to display variations of variable products!"
 msgstr ""
 
 #. Author of the plugin/theme
-msgid "pluginever"
+msgid "manikmist09"
 msgstr ""
 
 #. Author URI of the plugin/theme
