@@ -35,10 +35,10 @@ echo "Previous version: $SVNPLUGINVERSION"
 echo
 echo ".........................................."
 echo
-#if [ "$PLUGINVERSION" == "$SVNPLUGINVERSION" ]
-# then echo "Version in development & svn same. Exiting....";
-# exit 1;
-#fi
+if [ "$PLUGINVERSION" == "$SVNPLUGINVERSION" ]
+ then echo "Version in development & svn same. Exiting....";
+ exit 1;
+fi
 
 echo -e "Did you tagged version(v$SVNPLUGINVERSION):  (y/n)\c"
 read TAGGED
