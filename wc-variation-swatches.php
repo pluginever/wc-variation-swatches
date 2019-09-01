@@ -4,7 +4,7 @@
  * Plugin URI:  https://www.pluginever.com
  * Description: Provides a much nicer way to display variations of variable products!
  * Version:     1.0.0
- * Author:      manikmist09
+ * Author:      pluginever
  * Author URI:  https://manik.me
  * Donate link: https://www.pluginever.com
  * License:     GPLv2+
@@ -395,7 +395,7 @@ final class WC_Variation_Swatches {
 	 * @return void
 	 */
 	public function localization_setup() {
-		load_plugin_textdomain( 'wc-variation-swatches', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'wc-variation-swatches', false, dirname( plugin_basename( __FILE__ ) ) . '/i18n/languages/' );
 	}
 
 
@@ -407,7 +407,7 @@ final class WC_Variation_Swatches {
 	 * @return array
 	 */
 	public function plugin_action_links( $links ) {
-		$links[] = '<a href="' . admin_url( 'admin.php?page=wc-variation-swatches-settings' ) . '">' . __( 'Settings', 'wc-variation-swatches' ) . '</a>';
+		$links[] = '<a href="' . admin_url( 'edit.php?post_type=product&page=wc-variation-swatches' ) . '">' . __( 'Settings', 'wc-variation-swatches' ) . '</a>';
 
 		return $links;
 	}
