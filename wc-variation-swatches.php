@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: WC Variation Swatches
+ * Plugin Name: WooCommerce Variation Swatches
  * Plugin URI:  https://www.pluginever.com
  * Description: Provides a much nicer way to display variations of variable products!
  * Version:     1.0.0
- * Author:      pluginever
- * Author URI:  https://www.pluginever.com
+ * Author:      manikmist09
+ * Author URI:  https://manik.me
  * Donate link: https://www.pluginever.com
  * License:     GPLv2+
  * Text Domain: wc-variation-swatches
