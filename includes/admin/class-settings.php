@@ -75,12 +75,40 @@ class WC_Variation_Swatches_Settings {
 					),
 				),
 
+				apply_filters( 'wc_variation_swatches_show_attr',
+					array(
+						'name'    => 'show_attr',
+						'label'   => __( 'Shown Attribute Name', 'wc-variation-swatches' ),
+						'desc'    => sprintf( '<span class="howto">%s</span>', __( 'Show attribute name on single product page. <strong>This feature is only available in PRO version.</strong>', 'wc-variation-swatches' ) ),
+						'type'    => 'checkbox',
+						'default' => 'off',
+						'attr'    => [
+							'disabled' => 'disabled'
+						]
+					)
+				),
+
+				apply_filters( 'wc_variation_swatches_catalog_pos',
+					array(
+						'name'    => 'catalog_pos',
+						'label'   => __( 'Catalog Swatches Position', 'wc-variation-swatches' ),
+						'desc'    => __( 'Select the position where you want to show the swatches in the shop/catalog pages. <strong>This feature is only available in PRO version.</strong>', 'wc-variation-swatches' ),
+						'type'    => 'select',
+						'options' => array(
+							'1' => __( 'After item title and price', 'wc-variation-swatches' ),
+							'2' => __( 'Before item title and price', 'wc-variation-swatches' ),
+							'3' => __( 'After select options button', 'wc-variation-swatches' )
+						),
+						'attr'    => [
+							'disabled' => 'disabled'
+						]
+					)
+				),
+
 
 			),
 
 			'shape_settings' => array(
-
-
 				array(
 					'name'    => 'shape_style',
 					'label'   => __( 'Shape Style', 'wc-variation-swatches' ),

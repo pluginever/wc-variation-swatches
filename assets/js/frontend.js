@@ -30,8 +30,8 @@
 			e.preventDefault();
 
 			var swatch = $(this),
-				selectData = swatch.parent().prev().find('select'),
-				attribute_name = swatch.parent().attr('data-attribute_name'),
+				selectData = swatch.parent().parent().prev().find('select'),
+				attribute_name = swatch.parent().parent().attr('data-attribute_name'),
 				optionValue = swatch.attr('data-value');
 
 			selectData.trigger('focusin');
@@ -74,7 +74,7 @@
 			$('.wcvs-swatch').each(function () {
 
 				var swatch = $(this),
-					selectData = swatch.parent().prev().find('select'),
+					selectData = swatch.parent().parent().prev().find('select'),
 					optionValue = swatch.attr('data-value');
 
 				if (!selectData.find('option[value=\'' + optionValue + '\']').length) {
