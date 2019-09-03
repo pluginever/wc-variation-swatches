@@ -201,7 +201,6 @@ class WC_Variation_Swatches_Single_Variation {
 			}
 
 
-
 		</style>
 
 		<?php
