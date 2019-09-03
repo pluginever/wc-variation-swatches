@@ -22,7 +22,7 @@
 		"JSON": false,
 		"wp": false,
 		"wpwvs": false,
-		"wc_add_to_cart_variation_params": false,
-		"console": false
+		"console": true,
+		"wc_add_to_cart_variation_params": false
 	}
 }

@@ -59,8 +59,6 @@ class WC_Variation_Swatches_Attribute_Handler {
 	 */
 
 	public function add_attribute_fields( $taxonomy ) {
-
-
 		$attribute_tax = wc_variation_swatches_get_attr_tax_by_name( $taxonomy );
 
 		?>
@@ -71,7 +69,10 @@ class WC_Variation_Swatches_Attribute_Handler {
 				<?php wc_variation_swatches_field_label( $attribute_tax->attribute_type ) ?>
 			</label>
 
-			<?php wc_variation_swatches_field( $attribute_tax->attribute_type, null ); ?>
+			<?php
+			wc_variation_swatches_field( $attribute_tax->attribute_type, null );
+			do_action( 'wc_variation_swatches_add_edit_hover_image', $attribute_tax->attribute_type, false );
+			?>
 
 		</div>
 
@@ -125,11 +126,13 @@ class WC_Variation_Swatches_Attribute_Handler {
 				<label for="term-slug"><?php wc_variation_swatches_field_label( $attribute_tax->attribute_type ); ?></label>
 			</th>
 			<td>
-
 				<?php wc_variation_swatches_field( $attribute_tax->attribute_type, $value ); ?>
-
 			</td>
 		</tr>
+
+		<?php
+		do_action( 'wc_variation_swatches_add_edit_hover_image', $attribute_tax->attribute_type, $term );
+		?>
 
 	<?php }
 
@@ -154,6 +157,10 @@ class WC_Variation_Swatches_Attribute_Handler {
 		if ( ! empty( $_REQUEST['image'] ) ) {
 			update_term_meta( $term_id, 'image', intval( $_REQUEST['image'] ) );
 		}
+		//save hover-image type attribute terms images
+		if ( ! empty( $_REQUEST['hover_image'] ) ) {
+			update_term_meta( $term_id, 'hover_image', intval( $_REQUEST['hover_image'] ) );
+		}
 
 	}
 
@@ -173,7 +180,8 @@ class WC_Variation_Swatches_Attribute_Handler {
 
 		$new_columns['cb'] = ! empty( $columns['cb'] ) ? $columns['cb'] : '';
 
-		$new_columns['thumb'] = '';
+		$new_columns['thumb'] = __('Image', 'wc-variation-swatches');
+		$new_columns['hover'] = __('Hover Image', 'wc-variation-swatches-pro');
 
 		unset( $columns['cb'] );
 
@@ -205,23 +213,32 @@ class WC_Variation_Swatches_Attribute_Handler {
 		$attribute_tax = wc_variation_swatches_get_attr_tax_by_name( $taxonomy );
 
 		$value = get_term_meta( $term_id, $attribute_tax->attribute_type, true );
+		$hover = get_term_meta( $term_id, 'hover_image', true );
 
-		switch ( $attribute_tax->attribute_type ) {
+		if('hover' == $column){
+			$image = ! empty( $hover ) ? wp_get_attachment_image_src( $hover ) : '';
+			$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
-			case 'color':
-				printf( '<div class="wc-variation-swatches-preview swatches-type-color" style="background-color:%s;"></div>', esc_attr( $value ) );
-				break;
+			printf( '<img class="wc-variation-swatches-preview swatches-type-image" src="%s" width="44px" height="44px">', esc_url( $image ) );
+		}else {
 
-			case 'image':
-				$image = ! empty( $value ) ? wp_get_attachment_image_src( $value ) : '';
-				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
+			switch ( $attribute_tax->attribute_type ) {
 
-				printf( '<img class="wc-variation-swatches-preview swatches-type-image" src="%s" width="44px" height="44px">', esc_url( $image ) );
-				break;
+				case 'color':
+					printf( '<div class="wc-variation-swatches-preview swatches-type-color" style="background-color:%s;"></div>', esc_attr( $value ) );
+					break;
 
-			case 'label':
-				printf( '<div class="wc-variation-swatches-preview swatches-type-label">%s</div>', esc_html( $value ) );
-				break;
+				case 'image':
+					$image = ! empty( $value ) ? wp_get_attachment_image_src( $value ) : '';
+					$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
+
+					printf( '<img class="wc-variation-swatches-preview swatches-type-image" src="%s" width="44px" height="44px">', esc_url( $image ) );
+					break;
+
+				case 'label':
+					printf( '<div class="wc-variation-swatches-preview swatches-type-label">%s</div>', esc_html( $value ) );
+					break;
+			}
 		}
 
 	}
