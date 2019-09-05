@@ -112,7 +112,7 @@ class WC_Variation_Swatches_Single_Variation {
 		$class_shape       = $shape_style . '-box';
 		$class_shape_image = $shape_style . '-box-image';
 
-		$enable_tooltip           = wc_variation_swatches_get_settings( 'enable_tooltip', 'on', 'shape_settings' );
+		$enable_tooltip           = wc_variation_swatches_get_settings( 'enable_tooltip', 'on', 'tooltip_settings' );
 		$this->tooltip_bg_color   = wc_variation_swatches_get_settings( 'tooltip_bg_color', '', 'tooltip_settings' );
 		$this->font_size          = wc_variation_swatches_get_settings( 'font_size', '15', 'tooltip_settings' );
 		$this->tooltip_text_color = wc_variation_swatches_get_settings( 'tooltip_text_color', '', 'tooltip_settings' );
