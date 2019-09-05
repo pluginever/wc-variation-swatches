@@ -66,13 +66,14 @@ class WC_Variation_Swatches_Settings {
 				array(
 					'name'    => 'attribute_behaviour',
 					'label'   => __( 'Attribute Behaviour', 'wc-variation-swatches' ),
-					'desc'    => __( 'Disabled attribute will be hide / blur.', 'wc-variation-swatches' ),
+					'desc'    => __( 'Options to highlight disabled attributes.', 'wc-variation-swatches' ),
 					'type'    => 'radio',
 					'options' => array(
 						'with_cross'    => 'With Cross',
 						'without_cross' => 'Blur Without Cross',
 						'hide'          => 'Hide'
 					),
+					'default' => 'with_cross',
 				),
 
 				apply_filters( 'wc_variation_swatches_show_attr',
