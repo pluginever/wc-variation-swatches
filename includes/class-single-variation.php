@@ -132,7 +132,7 @@ class WC_Variation_Swatches_Single_Variation {
 			case 'color':
 				$this->color = get_term_meta( $term->term_id, 'color', true );
 
-				$html = sprintf( '<div class="swatch_wrapper %1$s"><div class="wcvs-swatch-color %2$s" title="%3$s" data-value="%4$s"><div class="variation_check %5$s"  style="background: %6$s;"></div> %7$s</div>%8$s</div>', $term->taxonomy, $class, $name, $term->slug, $attribute_behaviour, $this->color, $tooltip_html, $attr_name );
+				$html = sprintf( '<div class="swatch_wrapper %1$s"><div class="wcvs-swatch-color %2$s" title="%3$s" data-value="%4$s"><div class="variation_check %5$s"  style="background: %6$s;"></div> %7$s</div>%8$s</div>', $term->taxonomy, $class, 'off' == $enable_tooltip ? $name : '', $term->slug, $attribute_behaviour, $this->color, $tooltip_html, $attr_name );
 				break;
 
 			case 'image':
@@ -141,13 +141,13 @@ class WC_Variation_Swatches_Single_Variation {
 				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
 				$html = sprintf( '<div class="swatch_wrapper %1$s"><div class="wcvs-swatch-image %2$s %3$s" title="%4$s" data-value="%5$s"><div class="variation_check %6$s" style="background: url(%7$s);"></div>%8$s</div>%9$s</div>',
-					$term->taxonomy, $class, $class_shape_image, $name, $term->slug, $attribute_behaviour, $image, $tooltip_html, $attr_name );
+					$term->taxonomy, $class, $class_shape_image, 'off' == $enable_tooltip ? $name : '', $term->slug, $attribute_behaviour, $image, $tooltip_html, $attr_name );
 				break;
 
 			case 'label':
 				$label = get_term_meta( $term->term_id, 'label', true );
 				$label = $label ? $label : $name;
-				$html  = sprintf( '<div class="swatch_wrapper %1$s"><div class="wcvs-swatch-label %2$s" title="%3$s" data-value="%4$s"><div class="variation_check %5$s">%6$s</div></div>%7$s</div>', $term->taxonomy, $class, $name, $term->slug, $attribute_behaviour, $label, $attr_name );
+				$html  = sprintf( '<div class="swatch_wrapper %1$s"><div class="wcvs-swatch-label %2$s" title="%3$s" data-value="%4$s"><div class="variation_check %5$s">%6$s</div>%7$s</div>%8$s</div>', $term->taxonomy, $class, 'off' == $enable_tooltip ? $name : '', $term->slug, $attribute_behaviour, $label,$tooltip_html, $attr_name );
 				break;
 		}
 
