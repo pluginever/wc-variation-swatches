@@ -181,7 +181,7 @@ class WC_Variation_Swatches_Attribute_Handler {
 		$new_columns['cb'] = ! empty( $columns['cb'] ) ? $columns['cb'] : '';
 
 		$new_columns['thumb'] = __('Image', 'wc-variation-swatches');
-		$new_columns['hover'] = __('Hover Image', 'wc-variation-swatches-pro');
+		$new_columns['hover'] = __('Hover Image', 'wc-variation-swatches');
 
 		unset( $columns['cb'] );
 

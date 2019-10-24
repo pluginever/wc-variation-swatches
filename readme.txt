@@ -2,7 +2,7 @@
 Contributors: manikmist09
 Tags: woocommerce variation swatches, woocommerce variation, woocommerce, variation swatches, product attributes, color variation swatch, image variation swatch,, product color, product size, variable product attribute
 Requires at least: 4.4
-Tested up to: 5.2.2
+Tested up to: 5.2.4
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
@@ -83,6 +83,11 @@ Yes, of course. We do not create products for ourselves. You are always welcome 
 11.	Attribute Types
 
 == Changelog ==
+
+= 1.0.1 (24 October, 2019) =
+[Fix] WC compatibility with 3.7.1
+[Fix] WP compatibility with 5.2.4
+[Fix] Preview image in product attribute
 
 = 1.0.0 (1st September, 2019) =
 Initial release
