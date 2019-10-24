@@ -1,6 +1,6 @@
 <?php
 
-class WC_VARIATION_SWATCHES_Single_Variation {
+class WC_Variation_Swatches_Single_Variation {
 
 	public $color = '';
 	public $shape_width = '';
@@ -63,7 +63,10 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 
 		if ( array_key_exists( $attr->attribute_type, $types ) ) {
 			if ( ! empty( $options ) && $product && taxonomy_exists( $attribute ) ) {
-				$all_terms = wc_get_product_terms( $product->get_id(), $attribute, array( 'fields' => 'all', 'orderby' => 'term_id' ) );
+				$all_terms = wc_get_product_terms( $product->get_id(), $attribute, array(
+					'fields'  => 'all',
+					'orderby' => 'term_id'
+				) );
 
 				foreach ( $all_terms as $term ) {
 					if ( in_array( $term->slug, $options ) ) {
@@ -93,19 +96,23 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 
 	function attribute_html( $html, $term, $attr, $args ) {
 
-
 		$selected = sanitize_title( $args['selected'] ) == $term->slug ? 'selected' : '';
 		$name     = esc_html( $term->name );
 
 		$attribute_behaviour = wc_variation_swatches_get_settings( 'attribute_behaviour', 'with_cross', 'general_settings' );
 
-		$shape_style        = wc_variation_swatches_get_settings( 'shape_style', 'round', 'shape_settings' );
-		$this->shape_width  = wc_variation_swatches_get_settings( 'width', '30', 'shape_settings' );
-		$this->shape_height = wc_variation_swatches_get_settings( 'height', '30', 'shape_settings' );
-		$class_shape        = $shape_style . '-box';
-		$class_shape_image  = $shape_style . '-box-image';
+		$shape_width  = wc_variation_swatches_get_settings( 'width', '30', 'shape_settings' );
+		$shape_height = wc_variation_swatches_get_settings( 'height', '30', 'shape_settings' );
 
-		$enable_tooltip           = wc_variation_swatches_get_settings( 'enable_tooltip', 'on', 'shape_settings' );
+		$this->shape_width  = apply_filters( 'wc_variation_swatches_shape_width', $shape_width, $term );
+		$this->shape_height = apply_filters( 'wc_variation_swatches_shape_height', $shape_height, $term );
+
+		$shape_style       = wc_variation_swatches_get_settings( 'shape_style', 'round', 'shape_settings' );
+		$shape_style       = apply_filters( 'wc_variation_swatches_shape_style', $shape_style, $term );
+		$class_shape       = $shape_style . '-box';
+		$class_shape_image = $shape_style . '-box-image';
+
+		$enable_tooltip           = wc_variation_swatches_get_settings( 'enable_tooltip', 'on', 'tooltip_settings' );
 		$this->tooltip_bg_color   = wc_variation_swatches_get_settings( 'tooltip_bg_color', '', 'tooltip_settings' );
 		$this->font_size          = wc_variation_swatches_get_settings( 'font_size', '15', 'tooltip_settings' );
 		$this->tooltip_text_color = wc_variation_swatches_get_settings( 'tooltip_text_color', '', 'tooltip_settings' );
@@ -119,13 +126,13 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 
 		$class = join( ' ', [ 'wcvs-swatch', $class_shape, $border_style, 'swatch-' . $term->slug, $selected ] );
 
+		$attr_name = apply_filters( 'wc_variation_swatches_attr_name', '', $name, $term );
 		switch ( $attr->attribute_type ) {
 
 			case 'color':
 				$this->color = get_term_meta( $term->term_id, 'color', true );
 
-				$html = sprintf( '<div class="wcvs-swatch-color %1$s" title="%2$s" data-value="%3$s"><div class="variation_check %4$s"  style="background: %5$s;"></div>%6$s</div>',
-					$class, $name, $term->slug, $attribute_behaviour, $this->color, $tooltip_html );
+				$html = sprintf( '<div class="swatch_wrapper %1$s"><div class="wcvs-swatch-color %2$s" title="%3$s" data-value="%4$s"><div class="variation_check %5$s"  style="background: %6$s;"></div> %7$s</div>%8$s</div>', $term->taxonomy, $class, 'off' == $enable_tooltip ? $name : '', $term->slug, $attribute_behaviour, $this->color, $tooltip_html, $attr_name );
 				break;
 
 			case 'image':
@@ -133,14 +140,14 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 				$image = $image ? wp_get_attachment_image_src( $image ) : '';
 				$image = $image ? $image[0] : WC()->plugin_url() . '/assets/images/placeholder.png';
 
-				$html = sprintf( '<div class="wcvs-swatch-image %1$s %2$s" title="%3$s" data-value="%4$s"><div class="variation_check %5$s" style="background: url(%6$s);"></div>%7$s</div>',
-					$class, $class_shape_image, $name, $term->slug, $attribute_behaviour, $image, $tooltip_html );
+				$html = sprintf( '<div class="swatch_wrapper %1$s"><div class="wcvs-swatch-image %2$s %3$s" title="%4$s" data-value="%5$s"><div class="variation_check %6$s" style="background: url(%7$s);"></div>%8$s</div>%9$s</div>',
+					$term->taxonomy, $class, $class_shape_image, 'off' == $enable_tooltip ? $name : '', $term->slug, $attribute_behaviour, $image, $tooltip_html, $attr_name );
 				break;
 
 			case 'label':
 				$label = get_term_meta( $term->term_id, 'label', true );
 				$label = $label ? $label : $name;
-				$html  = sprintf( '<div class="wcvs-swatch-label %1$s" title="%2$s" data-value="%3$s"><div class="variation_check %4$s">%5$s</div></div>', $class, $name, $term->slug, $attribute_behaviour, $label );
+				$html  = sprintf( '<div class="swatch_wrapper %1$s"><div class="wcvs-swatch-label %2$s" title="%3$s" data-value="%4$s"><div class="variation_check %5$s">%6$s</div>%7$s</div>%8$s</div>', $term->taxonomy, $class, 'off' == $enable_tooltip ? $name : '', $term->slug, $attribute_behaviour, $label,$tooltip_html, $attr_name );
 				break;
 		}
 
@@ -180,7 +187,7 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 				height: <?php echo $this->shape_height . 'px'; ?>;
 			}
 
-			.wcvs-swatch-label > .variation_check{
+			.wcvs-swatch-label > .variation_check {
 				min-width: <?php echo intval($this->shape_width) - 3 . 'px';?>;
 				min-height: <?php echo intval($this->shape_height) - 3 . 'px';?>;
 			}
@@ -193,6 +200,7 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 				border: 2px solid rgba(<?php echo $brgb ?>, 1);
 			}
 
+
 		</style>
 
 		<?php
@@ -203,4 +211,4 @@ class WC_VARIATION_SWATCHES_Single_Variation {
 
 }
 
-new WC_VARIATION_SWATCHES_Single_Variation();
+new WC_Variation_Swatches_Single_Variation();

@@ -63,7 +63,7 @@
 
 				$button.siblings('.wc-variation-swatches-term-image').val(attachment.id);
 				$button.siblings('.wc-variation-swatches-remove-image').show();
-				$button.parent().prev('.wc-variation-swatches-preview').find('img').attr('src', attachment.sizes.thumbnail.url);
+				$button.parent().prev('.wc-variation-swatches-preview').find('img').attr('src', attachment.sizes.full.url);
 			});
 
 			// Finally, open the modal.

@@ -30,8 +30,8 @@
 			e.preventDefault();
 
 			var swatch = $(this),
-				selectData = swatch.parent().prev().find('select'),
-				attribute_name = swatch.parent().attr('data-attribute_name'),
+				selectData = swatch.parent().parent().prev().find('select'),
+				attribute_name = swatch.parent().parent().attr('data-attribute_name'),
 				optionValue = swatch.attr('data-value');
 
 			selectData.trigger('focusin');
@@ -54,16 +54,16 @@
 
 				delete selected[selected.indexOf(attribute_name)];
 			} else {
-				swatch.addClass('selected').siblings().removeClass('selected');
+				swatch.addClass('selected').parent().siblings().children().removeClass('selected');
+				swatch.removeClass('swatch-hide').find('.variation_check').removeClass('disabled');
 				selectData.val(optionValue);
 			}
-
 			selectData.change();
 			app.variation_check();
 		},
 
 		reset_variations: function () {
-			$(this).closest('.variations_form').find('.swatch.selected').removeClass('selected');
+			$(this).closest('.variations_form').find('.wcvs-swatch.selected').removeClass('selected');
 		},
 
 		variation_nomatching: function () {
@@ -74,7 +74,7 @@
 			$('.wcvs-swatch').each(function () {
 
 				var swatch = $(this),
-					selectData = swatch.parent().prev().find('select'),
+					selectData = swatch.parent().parent().prev().find('select'),
 					optionValue = swatch.attr('data-value');
 
 				if (!selectData.find('option[value=\'' + optionValue + '\']').length) {

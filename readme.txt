@@ -1,8 +1,8 @@
-=== Variation Swatches For WooCommerce ===
+=== WooCommerce Variation Swatches ===
 Contributors: manikmist09
 Tags: woocommerce variation swatches, woocommerce variation, woocommerce, variation swatches, product attributes, color variation swatch, image variation swatch,, product color, product size, variable product attribute
 Requires at least: 4.4
-Tested up to: 5.2.2
+Tested up to: 5.2.4
 Requires PHP: 5.6
 Stable tag: trunk
 License: GPLv2 or later
@@ -11,11 +11,9 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 == Description ==
 WooCommerce Variation Swatches is an exciting WooCommerce extension that allows you to display product variations with nice color, image and text/label swatches for your variable products.
 
-WooCommerce Variation Swatches will allow you to change the default dropdown fields for variable products offered by WooCommerce. 
-You must acknowledge that your store visitors prefer a graphical or visual representation of various product attributes. 
-Visual representation also helps to promote a professional and polished look of your store. 
-With WooCommerce Variation Swatches you can add exciting and descriptive visual looks for your variable products with just a few simple steps. 
-The exciting swatches will give your store visitors an impressive experience and turn visitors into customers.
+WooCommerce Variation Swatches will allow you to change the default dropdown fields for variable products offered by WooCommerce. You must acknowledge that your store visitors prefer a graphical or visual representation of various product attributes. Visual representation also helps to promote a professional and polished look of your store. 
+
+With WooCommerce Variation Swatches you can add exciting and descriptive visual looks for your variable products with just a few simple steps. The exciting swatches will give your store visitors an impressive experience and turn visitors into customers.
 
 == WooCommerce Variation Swatches Features: ==
 * Change the default WooCommerce dropdown to exciting clickable swatches.
@@ -40,26 +38,19 @@ The exciting swatches will give your store visitors an impressive experience and
 
 == Installation: ==
 Installing WooCommerce Variation Swatches is conventional like most WordPress plugin installation. There should not be any problem for you. 
-The only requirement for before you install WooCommerce Variation Swatches is that you must have WooCommerce installed and activated in your store. 
-As the plugin works on WooCommerce products you will get a warning if WooCommerce is missing. 
-To be on the safe side please make sure you have WooCommerce (minimum version 3.00) installed and activated.
+The only requirement for before you install WooCommerce Variation Swatches is that you must have WooCommerce installed and activated in your store. As the plugin works on WooCommerce products you will get a warning if WooCommerce is missing. To be on the safe side please make sure you have WooCommerce (minimum version 3.00) installed and activated.
 
 == How does WooCommerce Variation Swatches Work: ==
-You can get started with WooCommerce Variation Swatches in just a few steps. First of all, go to the "Attributes" section under WooCommerce "Product" menu. 
-You will find some default attributes that already exist there. Delete the existing attributes from there. 
-Now add new attributes from the "Add new attribute" option. Select the type from the dropdown option and then finally add them. There are three different "types" {Color, Image & Label} that you can choose.
+You can get started with WooCommerce Variation Swatches in just a few steps. First of all, go to the "Attributes" section under WooCommerce "Product" menu. You will find some default attributes that already exist there. Delete the existing attributes from there. Now add new attributes from the "Add new attribute" option. Select the type from the dropdown option and then finally add them. There are three different "types" {Color, Image & Label} that you can choose.
 
-Now you have to configure terms for those attributes. Under the color attribute, you can add different color names and choose a color for them from the color picker. 
-For the images, you have to upload images and give them proper term names. You can also use existing images here. Finally, for the label attribute choose a name and any number of characters for the swatch terms. 
-You can add or modify the terms at any time you want.
+Now you have to configure terms for those attributes. Under the color attribute, you can add different color names and choose a color for them from the color picker. For the images, you have to upload images and give them proper term names. You can also use existing images here. Finally, for the label attribute choose a name and any number of characters for the swatch terms. You can add or modify the terms at any time you want.
 
-Finally, you have to add them to your variable products. Go to the edit product section of your variable products. 
-Find variations from the product meta box section and delete the existing variations from there. If there are no variations added then you can skip this step. 
+Finally, you have to add them to your variable products. Go to the edit product section of your variable products. Find variations from the product meta box section and delete the existing variations from there. If there are no variations added then you can skip this step. 
+
 Next, you have to add the new variations for your product from the "Attributes" meta box. Click on the attribute name and select values for it. 
 You can either select all or specific values related to a product. 
 
-One last step, go to variations and make all the combinations that you need for your variations. 
-Once you save changes and update your product the beautiful swatches will appear for your product.
+One last step, go to variations and make all the combinations that you need for your variations. Once you save changes and update your product the beautiful swatches will appear for your product.
 
 == Compatibility: ==
 WooCommerce Variation Swatches requires WooCommerce and the minimum required version is 3.00. Apart from that, it is compatible with all WooCommerce themes. Though we did not experience any problem but there can be issues as WordPress and WooCommerce host a huge number of themes and plugins.
@@ -92,6 +83,11 @@ Yes, of course. We do not create products for ourselves. You are always welcome 
 11.	Attribute Types
 
 == Changelog ==
+
+= 1.0.1 (24 October, 2019) =
+[Fix] WC compatibility with 3.7.1
+[Fix] WP compatibility with 5.2.4
+[Fix] Preview image in product attribute
 
 = 1.0.0 (1st September, 2019) =
 Initial release
