@@ -65,12 +65,12 @@ class WC_Variation_Swatches_Settings {
 
 				array(
 					'name'    => 'attribute_behaviour',
-					'label'   => __( 'Attribute Behaviour', 'wc-variation-swatches' ),
+					'label'   => __( 'Attribute Behavior', 'wc-variation-swatches' ),
 					'desc'    => __( 'Options to highlight disabled attributes.', 'wc-variation-swatches' ),
 					'type'    => 'radio',
 					'options' => array(
-						'with_cross'    => 'With Cross',
-						'without_cross' => 'Blur Without Cross',
+						'with_cross'    => 'Cross',
+						'without_cross' => 'Blur',
 						'hide'          => 'Hide'
 					),
 					'default' => 'with_cross',
@@ -79,7 +79,7 @@ class WC_Variation_Swatches_Settings {
 				apply_filters( 'wc_variation_swatches_show_attr',
 					array(
 						'name'    => 'show_attr',
-						'label'   => __( 'Shown Attribute Name', 'wc-variation-swatches' ),
+						'label'   => __( 'Show Attribute Name', 'wc-variation-swatches' ),
 						'desc'    => sprintf( '<span class="howto">%s</span>', __( 'Show attribute name on single product page. <strong>This feature is only available in PRO version.</strong>', 'wc-variation-swatches' ) ),
 						'type'    => 'checkbox',
 						'default' => 'off',
